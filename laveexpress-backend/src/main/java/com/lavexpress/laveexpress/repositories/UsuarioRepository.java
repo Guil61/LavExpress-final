@@ -1,9 +1,10 @@
 package com.lavexpress.laveexpress.repositories;
 
-import com.lavexpress.laveexpress.bases.BaseRepository;
 import com.lavexpress.laveexpress.entities.Usuario;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface UsuarioRepository extends BaseRepository<Usuario> {
+import java.util.Optional;
+
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    Optional<Usuario> findByEmail(String email);
 }
