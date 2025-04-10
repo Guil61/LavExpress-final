@@ -1,30 +1,36 @@
 package com.lavexpress.laveexpress.controllers;
 
-import com.lavexpress.laveexpress.dtos.LoginRequest;
+import com.lavexpress.laveexpress.dtos.AuthResponse;
 import com.lavexpress.laveexpress.dtos.CadastroRequest;
-import org.springframework.http.HttpStatus;
+import com.lavexpress.laveexpress.dtos.LoginRequest;
+import com.lavexpress.laveexpress.services.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    @Autowired
+    private AuthService authService;
 
-        if ("guilherme@email.com".equals(loginRequest.getEmail()) &&
-                "123456".equals(loginRequest.getSenha())) {
-            return ResponseEntity.ok("Login realizado com sucesso");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
-        }
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        AuthResponse response = authService.authenticate(loginRequest);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastro(@RequestBody CadastroRequest cadastroRequest) {
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody CadastroRequest cadastroRequest) {
+        AuthResponse response = authService.register(cadastroRequest);
+        return ResponseEntity.ok(response);
+    }
 
-        return ResponseEntity.ok("Usuário cadastrado com sucesso");
+    @GetMapping("/verificar")
+    public ResponseEntity<Boolean> verificarToken(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        boolean valido = authService.verificarToken(token);
+        return ResponseEntity.ok(valido);
     }
 }

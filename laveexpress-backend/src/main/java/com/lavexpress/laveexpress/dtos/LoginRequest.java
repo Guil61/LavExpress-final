@@ -1,24 +1,8 @@
 package com.lavexpress.laveexpress.dtos;
 
-public class LoginRequest {
+public record LoginRequest(
+        String email,
+        String senha
+) {
 
-    private String email;
-    private String senha;
-
-    // Getters and setters
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 }
