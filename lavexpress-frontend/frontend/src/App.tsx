@@ -1,17 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Login';
-import Cadastro from './Cadastro'; // Certifique-se de ter o componente de cadastro
+import React from 'react';
+import { View } from 'react-native';
+import Login from './components/lavexpresstela/Login'; // ajuste se o caminho estiver diferente
 
-function App() {
+export default function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/cadastro" element={<Cadastro />} />
-                {/* Outras rotas */}
-            </Routes>
-        </Router>
+        <View style={{ flex: 1 }}>
+            <Login />
+        </View>
     );
 }
-
-export default App;

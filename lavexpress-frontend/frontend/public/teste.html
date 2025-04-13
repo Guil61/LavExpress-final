@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LavExpress - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #1e90ff;
+            margin: 0 0 5px 0;
+            font-size: 32px;
+        }
+
+        .logo p {
+            color: #555;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input {
+            padding: 12px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1e90ff;
+        }
+
+        button {
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 13px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #187bcd;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .links a {
+            color: #1e90ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .car-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">
+        <h1>LavExpress</h1>
+        <p>Seu lava-jato na palma da mão</p>
+    </div>
+
+    <form>
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Seu email" required>
+        </div>
+
+        <div class="input-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Sua senha" required>
+        </div>
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <div class="links">
+        <a href="cadastro.html">Não tem uma conta? Cadastre-se</a>
+        <a href="recuperar-senha.html">Esqueceu sua senha?</a>
+    </div>
+
+    <div class="footer">
+        <div class="car-icon">🚗</div>
+        <p>© 2025 LavExpress - Todos os direitos reservados</p>
+    </div>
+</div>
+</body>
+</html>
