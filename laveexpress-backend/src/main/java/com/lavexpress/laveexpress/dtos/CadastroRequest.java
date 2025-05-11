@@ -1,12 +1,22 @@
 package com.lavexpress.laveexpress.dtos;
 
+/**
+ * DTO para requisição de cadastro de usuário
+ */
 public class CadastroRequest {
 
     private String nome;
     private String email;
     private String senha;
+    private String confirmacaoSenha;
+    private String cpf;
+    private String telefone;
 
-    // Getters and setters
+    // Construtores
+    public CadastroRequest() {
+    }
+
+    // Getters e Setters
     public String getNome() {
         return nome;
     }
@@ -29,5 +39,29 @@ public class CadastroRequest {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getConfirmacaoSenha() {
+        return confirmacaoSenha;
+    }
+
+    public void setConfirmacaoSenha(String confirmacaoSenha) {
+        this.confirmacaoSenha = confirmacaoSenha;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 }

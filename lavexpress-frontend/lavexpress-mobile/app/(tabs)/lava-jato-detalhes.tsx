@@ -1,6 +1,6 @@
 // app/lava-jato-detalhes.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -13,72 +13,29 @@ import {
     TouchableOpacity,
     FlatList,
     Dimensions,
-    Linking
+    Linking,
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { lavaJatoService, LavaJato, Servico } from '../services/api';
 
-// Dados simulados para um lava-jato específico
-const lavaJatoData = {
-    "brasil": {
-        id: "brasil",
-        nome: "Lava Jato Brasil",
-        imagens: [
-            "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&w=800&q=80",
-            "https://images.pexels.com/photos/6873076/pexels-photo-6873076.jpeg?auto=compress&cs=tinysrgb&w=800",
-            "https://images.pexels.com/photos/6873086/pexels-photo-6873086.jpeg?auto=compress&cs=tinysrgb&w=800"
-        ],
-        avaliacao: 4.7,
-        totalAvaliacoes: 328,
-        endereco: "Quadra 106 Sul, Bloco B, Loja 12, Plano Piloto, Brasília-DF",
-        horarios: "Segunda a Sábado: 08:00 - 19:00 | Domingo: 08:00 - 14:00",
-        telefone: "(61) 3224-5678",
-        descricao: "Oferecemos serviços de lavagem automotiva com produtos de primeira linha e equipe especializada, garantindo o melhor resultado para seu veículo. Atuamos no mercado há mais de 15 anos com compromisso e qualidade.",
-        servicos: [
-            { id: 1, nome: "Lavagem Simples", preco: "R$ 30,00", tempo: "30 min", descricao: "Lavagem externa com shampoo automotivo e secagem." },
-            { id: 2, nome: "Lavagem Completa", preco: "R$ 40,00", tempo: "45 min", descricao: "Lavagem externa, aspiração interna, limpeza de tapetes e painel." },
-            { id: 3, nome: "Higienização Interna", preco: "R$ 120,00", tempo: "3h", descricao: "Limpeza profunda dos bancos, carpetes, teto e todas as superfícies internas." },
-            { id: 4, nome: "Polimento", preco: "R$ 150,00", tempo: "2h", descricao: "Remoção de riscos superficiais e brilho intenso na pintura." },
-            { id: 5, nome: "Cristalização", preco: "R$ 180,00", tempo: "2h 30min", descricao: "Proteção durável para a pintura com brilho intenso." },
-            { id: 6, nome: "Enceramento", preco: "R$ 70,00", tempo: "1h", descricao: "Aplicação de cera de carnaúba para proteção e brilho." }
-        ],
-        avaliacoes: [
-            { id: 1, usuario: "Marcos R.", data: "12/03/2025", nota: 5, comentario: "Excelente atendimento e serviço de qualidade! Recomendo." },
-            { id: 2, usuario: "Ana Paula", data: "28/02/2025", nota: 4, comentario: "Bom serviço, mas demorou um pouco mais do que o previsto." },
-            { id: 3, usuario: "Carlos Eduardo", data: "15/02/2025", nota: 5, comentario: "Melhor lava-jato da cidade! Atendimento nota 10." }
-        ],
-        latitude: -15.8080374,
-        longitude: -47.8830701
-    },
-    "canaa": {
-        id: "canaa",
-        nome: "Lava Jato Canaã",
-        imagens: [
-            "https://images.pexels.com/photos/6873076/pexels-photo-6873076.jpeg?auto=compress&cs=tinysrgb&w=800",
-            "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&w=800&q=80",
-            "https://images.pexels.com/photos/6873086/pexels-photo-6873086.jpeg?auto=compress&cs=tinysrgb&w=800"
-        ],
-        avaliacao: 4.5,
-        totalAvaliacoes: 245,
-        endereco: "Quadra 210 Norte, Bloco A, Loja 08, Plano Piloto, Brasília-DF",
-        horarios: "Segunda a Sexta: 08:00 - 18:00 | Sábado: 08:00 - 15:00",
-        telefone: "(61) 3223-4567",
-        descricao: "O Lava Jato Canaã está no mercado há 10 anos, oferecendo serviços de alta qualidade para cuidar do seu veículo. Nossa equipe é treinada para oferecer o melhor serviço com agilidade e eficiência.",
-        servicos: [
-            { id: 1, nome: "Lavagem Simples", preco: "R$ 30,00", tempo: "25 min", descricao: "Lavagem externa com shampoo automotivo e secagem." },
-            { id: 2, nome: "Lavagem Completa", preco: "R$ 45,00", tempo: "40 min", descricao: "Lavagem externa, aspiração interna, limpeza de tapetes e painel." },
-            { id: 3, nome: "Higienização de Bancos", preco: "R$ 90,00", tempo: "2h", descricao: "Limpeza profunda dos bancos, removendo manchas e odores." },
-            { id: 4, nome: "Polimento", preco: "R$ 140,00", tempo: "2h", descricao: "Remoção de riscos superficiais e brilho intenso na pintura." }
-        ],
-        avaliacoes: [
-            { id: 1, usuario: "Luiza M.", data: "05/03/2025", nota: 5, comentario: "Atendimento rápido e eficiente. Recomendo!" },
-            { id: 2, usuario: "Pedro Henrique", data: "22/02/2025", nota: 4, comentario: "Serviço bem feito, mas o preço está um pouco acima da média." }
-        ],
-        latitude: -15.7711506,
-        longitude: -47.8761418
-    },
-    // Adicione mais lava-jatos conforme necessário
-};
+// Tipo para avaliações (mantendo a estrutura atual)
+interface Avaliacao {
+    id: number;
+    usuario: string;
+    data: string;
+    nota: number;
+    comentario: string;
+}
+
+// Dados de exemplo para avaliações (como ainda não temos na API)
+const avaliacoesExemplo: Avaliacao[] = [
+    { id: 1, usuario: "Marcos R.", data: "12/03/2025", nota: 5, comentario: "Excelente atendimento e serviço de qualidade! Recomendo." },
+    { id: 2, usuario: "Ana Paula", data: "28/02/2025", nota: 4, comentario: "Bom serviço, mas demorou um pouco mais do que o previsto." },
+    { id: 3, usuario: "Carlos Eduardo", data: "15/02/2025", nota: 5, comentario: "Melhor lava-jato da cidade! Atendimento nota 10." }
+];
 
 const { width } = Dimensions.get('window');
 
@@ -86,15 +43,78 @@ export default function LavaJatoDetalhes() {
     const params = useLocalSearchParams();
     const id = params.id as string;
     const router = useRouter();
+    const lavaJatoId = parseInt(id);
+
+    // Estados para dados da API
+    const [lavaJato, setLavaJato] = useState<LavaJato | null>(null);
+    const [servicos, setServicos] = useState<Servico[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingServicos, setLoadingServicos] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     // Estado para controlar a guia ativa
     const [activeTab, setActiveTab] = useState('servicos');
 
-    // Obter dados do lava-jato baseado no ID
-    const lavaJato = lavaJatoData[id] || lavaJatoData.brasil; // Fallback para um lava-jato padrão
-
     // Estado para controlar a imagem ativa no carrossel
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+    // Carrossel de imagens (temporário até termos múltiplas imagens na API)
+    const carouselImages = [
+        "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&w=800&q=80",
+        "https://images.pexels.com/photos/6873076/pexels-photo-6873076.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "https://images.pexels.com/photos/6873086/pexels-photo-6873086.jpeg?auto=compress&cs=tinysrgb&w=800"
+    ];
+
+    // Carregar dados do lava-jato e serviços
+    useEffect(() => {
+        const loadLavaJatoData = async () => {
+            if (!lavaJatoId) {
+                setError('ID de lava-jato inválido');
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Carregar detalhes do lava-jato
+                const lavaJatoData = await lavaJatoService.buscarLavaJato(lavaJatoId);
+                setLavaJato(lavaJatoData);
+
+                // Carregar serviços
+                await loadServicos(lavaJatoId);
+            } catch (err) {
+                console.error('Erro ao carregar detalhes do lava-jato:', err);
+                setError('Não foi possível carregar os detalhes. Tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadLavaJatoData();
+    }, [lavaJatoId]);
+
+    // Função para carregar serviços
+    const loadServicos = async (id: number) => {
+        try {
+            setLoadingServicos(true);
+            const servicosData = await lavaJatoService.listarServicos(id);
+
+            // Filtrar apenas serviços ativos e ordenar por preço
+            const servicosAtivos = servicosData
+                .filter(servico => servico.ativo)
+                .sort((a, b) => a.preco - b.preco);
+
+            setServicos(servicosAtivos);
+        } catch (err) {
+            console.error('Erro ao carregar serviços:', err);
+            Alert.alert('Erro', 'Não foi possível carregar os serviços deste lava-jato.');
+            setServicos([]);
+        } finally {
+            setLoadingServicos(false);
+        }
+    };
 
     // Função para renderizar as estrelas de avaliação
     const renderStars = (rating: number) => {
@@ -115,19 +135,22 @@ export default function LavaJatoDetalhes() {
         return (
             <View style={styles.starsContainer}>
                 {stars}
-                <Text style={styles.ratingText}>{lavaJato.avaliacao.toFixed(1)}</Text>
-                <Text style={styles.reviewCount}>({lavaJato.totalAvaliacoes} avaliações)</Text>
+                <Text style={styles.ratingText}>{lavaJato?.avaliacaoMedia.toFixed(1) || '0.0'}</Text>
+                <Text style={styles.reviewCount}>({lavaJato?.avaliacaoMedia ? '328' : '0'} avaliações)</Text>
             </View>
         );
     };
 
     // Função para abrir o telefone para ligar
     const handleCall = () => {
+        if (!lavaJato?.telefone) return;
         Linking.openURL(`tel:${lavaJato.telefone.replace(/[^0-9]/g, '')}`);
     };
 
     // Função para abrir o mapa
     const handleOpenMap = () => {
+        if (!lavaJato?.latitude || !lavaJato?.longitude) return;
+
         const url = Platform.select({
             ios: `maps:?q=${lavaJato.latitude},${lavaJato.longitude}`,
             android: `geo:${lavaJato.latitude},${lavaJato.longitude}?q=${lavaJato.nome}`
@@ -140,9 +163,48 @@ export default function LavaJatoDetalhes() {
     const handleAgendarServico = (servicoId: number) => {
         router.push({
             pathname: '/agendamento',
-            params: { lavaJatoId: lavaJato.id, servicoId }
+            params: { lavaJatoId: lavaJato?.id.toString(), servicoId: servicoId.toString() }
         });
     };
+
+    // Formatação de preço
+    const formatarPreco = (preco: number) => {
+        return preco.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+    };
+
+    // Mostrar tela de carregamento
+    if (loading) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#0077cc" />
+                    <Text style={styles.loadingText}>Carregando detalhes...</Text>
+                </View>
+            </SafeAreaView>
+        );
+    }
+
+    // Mostrar mensagem de erro
+    if (error || !lavaJato) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+                <View style={styles.errorContainer}>
+                    <Ionicons name="alert-circle-outline" size={64} color="#ff6b6b" />
+                    <Text style={styles.errorText}>{error || 'Lava-jato não encontrado'}</Text>
+                    <TouchableOpacity style={styles.backButtonError} onPress={() => router.push('/home')}>
+                        <Text style={styles.backButtonTextError}>Voltar para a Home</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -151,7 +213,7 @@ export default function LavaJatoDetalhes() {
             {/* Carrossel de imagens */}
             <View style={styles.imageCarousel}>
                 <FlatList
-                    data={lavaJato.imagens}
+                    data={lavaJato.imagemUrl ? [lavaJato.imagemUrl, ...carouselImages.slice(1)] : carouselImages}
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
@@ -167,7 +229,7 @@ export default function LavaJatoDetalhes() {
 
                 {/* Indicadores do carrossel */}
                 <View style={styles.paginationContainer}>
-                    {lavaJato.imagens.map((_, index) => (
+                    {(lavaJato.imagemUrl ? [lavaJato.imagemUrl, ...carouselImages.slice(1)] : carouselImages).map((_, index) => (
                         <View
                             key={index}
                             style={[
@@ -193,16 +255,20 @@ export default function LavaJatoDetalhes() {
                 {/* Informações gerais */}
                 <View style={styles.headerInfo}>
                     <Text style={styles.title}>{lavaJato.nome}</Text>
-                    {renderStars(lavaJato.avaliacao)}
+                    {renderStars(lavaJato.avaliacaoMedia || 0)}
 
                     <View style={styles.addressContainer}>
                         <Ionicons name="location-outline" size={18} color="#666" />
-                        <Text style={styles.address}>{lavaJato.endereco}</Text>
+                        <Text style={styles.address}>{lavaJato.endereco}, {lavaJato.cidade}-{lavaJato.estado}</Text>
                     </View>
 
                     <View style={styles.scheduleContainer}>
                         <Ionicons name="time-outline" size={18} color="#666" />
-                        <Text style={styles.schedule}>{lavaJato.horarios}</Text>
+                        <Text style={styles.schedule}>
+                            {lavaJato.horarioAbertura && lavaJato.horarioFechamento
+                                ? `Segunda a Sábado: ${lavaJato.horarioAbertura} - ${lavaJato.horarioFechamento}`
+                                : "Horário não informado"}
+                        </Text>
                     </View>
 
                     <View style={styles.actionsContainer}>
@@ -226,7 +292,9 @@ export default function LavaJatoDetalhes() {
                 {/* Descrição */}
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Sobre</Text>
-                    <Text style={styles.descriptionText}>{lavaJato.descricao}</Text>
+                    <Text style={styles.descriptionText}>
+                        {lavaJato.descricao || "Oferecemos serviços de lavagem automotiva com produtos de primeira linha e equipe especializada, garantindo o melhor resultado para seu veículo."}
+                    </Text>
                 </View>
 
                 {/* Abas de navegação */}
@@ -253,31 +321,45 @@ export default function LavaJatoDetalhes() {
                 {/* Conteúdo das abas */}
                 {activeTab === 'servicos' ? (
                     <View style={styles.servicosContainer}>
-                        {lavaJato.servicos.map((servico) => (
-                            <View key={servico.id} style={styles.servicoCard}>
-                                <View style={styles.servicoInfo}>
-                                    <Text style={styles.servicoNome}>{servico.nome}</Text>
-                                    <Text style={styles.servicoDescricao}>{servico.descricao}</Text>
-                                    <View style={styles.servicoDetails}>
-                                        <View style={styles.servicoDetail}>
-                                            <Ionicons name="time-outline" size={14} color="#666" />
-                                            <Text style={styles.servicoDetailText}>{servico.tempo}</Text>
-                                        </View>
-                                        <Text style={styles.servicoPreco}>{servico.preco}</Text>
-                                    </View>
-                                </View>
-                                <TouchableOpacity
-                                    style={styles.agendarButton}
-                                    onPress={() => handleAgendarServico(servico.id)}
-                                >
-                                    <Text style={styles.agendarButtonText}>Agendar</Text>
-                                </TouchableOpacity>
+                        {loadingServicos ? (
+                            <View style={styles.loadingServicos}>
+                                <ActivityIndicator size="small" color="#0077cc" />
+                                <Text style={styles.loadingServicosText}>Carregando serviços...</Text>
                             </View>
-                        ))}
+                        ) : servicos.length === 0 ? (
+                            <View style={styles.emptyServicos}>
+                                <Ionicons name="car-outline" size={48} color="#cccccc" />
+                                <Text style={styles.emptyServicosText}>Nenhum serviço disponível.</Text>
+                            </View>
+                        ) : (
+                            servicos.map((servico) => (
+                                <View key={servico.id} style={styles.servicoCard}>
+                                    <View style={styles.servicoInfo}>
+                                        <Text style={styles.servicoNome}>{servico.nome}</Text>
+                                        <Text style={styles.servicoDescricao}>
+                                            {servico.descricao || "Serviço de lavagem automotiva de qualidade."}
+                                        </Text>
+                                        <View style={styles.servicoDetails}>
+                                            <View style={styles.servicoDetail}>
+                                                <Ionicons name="time-outline" size={14} color="#666" />
+                                                <Text style={styles.servicoDetailText}>{servico.duracaoMinutos} min</Text>
+                                            </View>
+                                            <Text style={styles.servicoPreco}>{formatarPreco(servico.preco)}</Text>
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity
+                                        style={styles.agendarButton}
+                                        onPress={() => handleAgendarServico(servico.id)}
+                                    >
+                                        <Text style={styles.agendarButtonText}>Agendar</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        )}
                     </View>
                 ) : (
                     <View style={styles.avaliacoesContainer}>
-                        {lavaJato.avaliacoes.map((avaliacao) => (
+                        {avaliacoesExemplo.map((avaliacao) => (
                             <View key={avaliacao.id} style={styles.avaliacaoCard}>
                                 <View style={styles.avaliacaoHeader}>
                                     <View style={styles.userInitials}>
@@ -316,7 +398,8 @@ export default function LavaJatoDetalhes() {
             <View style={styles.bottomButtonContainer}>
                 <TouchableOpacity
                     style={styles.bottomAgendarButton}
-                    onPress={() => handleAgendarServico(lavaJato.servicos[0].id)}
+                    onPress={() => handleAgendarServico(servicos.length > 0 ? servicos[0].id : 0)}
+                    disabled={servicos.length === 0}
                 >
                     <Text style={styles.bottomAgendarButtonText}>Agendar Lavagem</Text>
                 </TouchableOpacity>
@@ -329,6 +412,40 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 16,
+        fontSize: 16,
+        color: '#666',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    errorText: {
+        marginTop: 16,
+        fontSize: 18,
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: 24,
+    },
+    backButtonError: {
+        backgroundColor: '#0077cc',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    backButtonTextError: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     imageCarousel: {
         height: 250,
@@ -636,5 +753,22 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    loadingServicos: {
+        padding: 40,
+        alignItems: 'center',
+    },
+    loadingServicosText: {
+        marginTop: 12,
+        color: '#666',
+    },
+    emptyServicos: {
+        padding: 40,
+        alignItems: 'center',
+    },
+    emptyServicosText: {
+        marginTop: 12,
+        color: '#666',
+        textAlign: 'center',
     },
 });

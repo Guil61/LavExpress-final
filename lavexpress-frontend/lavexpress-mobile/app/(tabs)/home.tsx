@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -9,126 +9,150 @@ import {
     SafeAreaView,
     StatusBar,
     Platform,
+    ActivityIndicator,
+    Alert,
 } from "react-native";
-import {Ionicons, FontAwesome} from "@expo/vector-icons";
-import {Link, useRouter} from "expo-router";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { Link, useRouter } from "expo-router";
+import * as Location from 'expo-location';
+import { lavaJatoService, LavaJato } from "../services/api";
 
 const categorias = [
-    {nome: "Completo", icone: "car-sport"},
-    {nome: "Lavagem Simples", icone: "water"},
-    {nome: "Higienização", icone: "brush"},
-    {nome: "Polimento", icone: "color-wand"},
-];
-
-const lavaJatos = [
-    {
-        id: "brasil",
-        nome: "Lava Jato Brasil",
-        servico: "Completo",
-        avaliacao: 4.7,
-        distancia: "3.5 km",
-        tempo: "20-30 min",
-        preco: "R$ 40,00",
-        imagem: "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&w=300&q=80",
-    },
-    {
-        id: "canaa",
-        nome: "Lava Jato Canaã",
-        servico: "Simples",
-        avaliacao: 4.5,
-        distancia: "2.1 km",
-        tempo: "15-25 min",
-        preco: "R$ 30,00",
-        imagem: "https://images.pexels.com/photos/6873076/pexels-photo-6873076.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "rio_negro",
-        nome: "Lava Jato Rio Negro",
-        servico: "Completo",
-        avaliacao: 4.8,
-        distancia: "4.0 km",
-        tempo: "30-40 min",
-        preco: "R$ 50,00",
-        imagem: "https://images.pexels.com/photos/6873086/pexels-photo-6873086.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "acquatec",
-        nome: "ACQUATEC Lavagem Expressa",
-        servico: "Express",
-        avaliacao: 4.6,
-        distancia: "5.2 km",
-        tempo: "25-35 min",
-        preco: "R$ 35,00",
-        imagem: "https://images.unsplash.com/photo-1605618826115-fb9e775cf91d?auto=format&fit=crop&w=300&q=80",
-    },
-    {
-        id: "new_car",
-        nome: "New Car Lava Jato",
-        servico: "Premium",
-        avaliacao: 4.9,
-        distancia: "1.8 km",
-        tempo: "40-50 min",
-        preco: "R$ 80,00",
-        imagem: "https://images.pexels.com/photos/3354648/pexels-photo-3354648.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "express",
-        nome: "Express Lava Jato & Higienização",
-        servico: "Simples",
-        avaliacao: 4.4,
-        distancia: "3.2 km",
-        tempo: "20-25 min",
-        preco: "R$ 25,00",
-        imagem: "https://images.pexels.com/photos/3354647/pexels-photo-3354647.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "flash",
-        nome: "Flash Lava Jato",
-        servico: "Polimento",
-        avaliacao: 4.7,
-        distancia: "4.5 km",
-        tempo: "60 min",
-        preco: "R$ 120,00",
-        imagem: "https://images.pexels.com/photos/372810/pexels-photo-372810.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "guara",
-        nome: "Lava Rapido Guará",
-        servico: "Express",
-        avaliacao: 4.3,
-        distancia: "2.7 km",
-        tempo: "15-20 min",
-        preco: "R$ 28,00",
-        imagem: "https://images.pexels.com/photos/7781310/pexels-photo-7781310.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "rota010",
-        nome: "Rota 010 Lava Jato",
-        servico: "Ecológico",
-        avaliacao: 4.8,
-        distancia: "5.0 km",
-        tempo: "35-45 min",
-        preco: "R$ 45,00",
-        imagem: "https://images.pexels.com/photos/5765/car-vehicle-transport-vintage.jpg?auto=compress&cs=tinysrgb&w=300",
-    },
-    {
-        id: "jj",
-        nome: "JJ Lava Jato",
-        servico: "Completo",
-        avaliacao: 4.6,
-        distancia: "2.3 km",
-        tempo: "25-35 min",
-        preco: "R$ 55,00",
-        imagem: "https://images.pexels.com/photos/244553/pexels-photo-244553.jpeg?auto=compress&cs=tinysrgb&w=300",
-    },
+    { nome: "Completo", icone: "car-sport" },
+    { nome: "Lavagem Simples", icone: "water" },
+    { nome: "Higienização", icone: "brush" },
+    { nome: "Polimento", icone: "color-wand" },
 ];
 
 export default function Home() {
     const router = useRouter();
+    const [lavaJatos, setLavaJatos] = useState<LavaJato[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [locationPermission, setLocationPermission] = useState<boolean>(false);
+    const [userCity, setUserCity] = useState<string>("Brasília, DF");
+
+    // Carregar dados ao iniciar
+    useEffect(() => {
+        // Solicitar permissão de localização e carregar dados
+        requestLocationPermissionAndLoadData();
+    }, []);
+
+    const requestLocationPermissionAndLoadData = async () => {
+        try {
+            // Solicitar permissão de localização
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            const hasPermission = status === 'granted';
+            setLocationPermission(hasPermission);
+
+            if (hasPermission) {
+                // Obter localização atual
+                const location = await Location.getCurrentPositionAsync({});
+                setUserLocation({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude
+                });
+
+                // Tentar obter nome da cidade
+                try {
+                    const geocode = await Location.reverseGeocodeAsync({
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude
+                    });
+
+                    if (geocode.length > 0) {
+                        const { city, region } = geocode[0];
+                        if (city && region) {
+                            setUserCity(`${city}, ${region}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Erro ao obter nome da cidade:", error);
+                }
+
+                // Carregar lava-jatos próximos
+                await loadNearbyLavaJatos(location.coords.latitude, location.coords.longitude);
+            } else {
+                // Se não tiver permissão, carregar lava-jatos gerais
+                await loadLavaJatos();
+            }
+        } catch (error) {
+            console.error("Erro ao obter localização:", error);
+            await loadLavaJatos();
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadNearbyLavaJatos = async (latitude: number, longitude: number) => {
+        try {
+            const data = await lavaJatoService.buscarProximos(latitude, longitude, 10);
+            setLavaJatos(data);
+        } catch (error) {
+            console.error("Erro ao carregar lava-jatos próximos:", error);
+            Alert.alert(
+                "Erro",
+                "Não foi possível carregar os lava-jatos próximos. Carregando lista geral."
+            );
+            await loadLavaJatos();
+        }
+    };
+
+    const loadLavaJatos = async () => {
+        try {
+            const data = await lavaJatoService.listarLavaJatos();
+            setLavaJatos(data.lavaJatos || []);
+        } catch (error) {
+            console.error("Erro ao carregar lava-jatos:", error);
+            Alert.alert("Erro", "Não foi possível carregar a lista de lava-jatos.");
+            // Usar dados de exemplo caso a API falhe
+            setLavaJatos([]);
+        }
+    };
 
     // Função para navegar para a tela de detalhes do lava-jato
-    const navegarParaDetalhes = (id: string) => {
+    const navegarParaDetalhes = (id: number) => {
         router.push(`/lava-jato-detalhes?id=${id}`);
+    };
+
+    // Formatar preço médio
+    const formatarPreco = (lavaJato: LavaJato) => {
+        // Aqui você pode implementar lógica para obter preço médio dos serviços
+        // Por enquanto, retornaremos um valor fixo
+        return "R$ 40,00";
+    };
+
+    // Calcular tempo estimado baseado na distância
+    const calcularTempoEstimado = (lavaJato: LavaJato) => {
+        // Implementar lógica baseada na distância ou duração dos serviços
+        return "20-30 min";
+    };
+
+    // Calcular distância se tiver localização do usuário
+    const calcularDistancia = (lavaJato: LavaJato) => {
+        if (!userLocation || !lavaJato.latitude || !lavaJato.longitude) return null;
+
+        const lat1 = userLocation.latitude;
+        const lon1 = userLocation.longitude;
+        const lat2 = lavaJato.latitude;
+        const lon2 = lavaJato.longitude;
+
+        const R = 6371; // Raio da Terra em km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = R * c; // Distância em km
+
+        return `${distance.toFixed(1)} km`;
+    };
+
+    // Função auxiliar para conversão de graus para radianos
+    const deg2rad = (deg: number) => {
+        return deg * (Math.PI/180);
     };
 
     return (
@@ -142,7 +166,7 @@ export default function Home() {
             <View style={styles.headerContainer}>
                 <View style={styles.locationContainer}>
                     <Ionicons name="location-sharp" size={20} color="#0077cc"/>
-                    <Text style={styles.locationText}>Brasília, DF</Text>
+                    <Text style={styles.locationText}>{userCity}</Text>
                 </View>
                 <Link href="/perfil" asChild>
                     <TouchableOpacity>
@@ -151,92 +175,117 @@ export default function Home() {
                 </Link>
             </View>
 
-            <ScrollView>
-                {/* Conteúdo Principal */}
-                <View style={styles.content}>
-                    <Text style={styles.headerTitle}>Encontre o melhor lava-jato</Text>
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#0077cc" />
+                    <Text style={styles.loadingText}>Carregando lava-jatos...</Text>
+                </View>
+            ) : (
+                <ScrollView>
+                    {/* Conteúdo Principal */}
+                    <View style={styles.content}>
+                        <Text style={styles.headerTitle}>Encontre o melhor lava-jato</Text>
 
-                    {/* Barra de Pesquisa */}
-                    <Link href="/buscar" asChild>
-                        <TouchableOpacity style={styles.searchBar}>
-                            <Ionicons name="search" size={20} color="#666"/>
-                            <Text style={styles.searchText}>Pesquisar lava-jatos...</Text>
-                        </TouchableOpacity>
-                    </Link>
+                        {/* Barra de Pesquisa */}
+                        <Link href="/buscar" asChild>
+                            <TouchableOpacity style={styles.searchBar}>
+                                <Ionicons name="search" size={20} color="#666"/>
+                                <Text style={styles.searchText}>Pesquisar lava-jatos...</Text>
+                            </TouchableOpacity>
+                        </Link>
 
-                    {/* Categorias */}
-                    <Text style={styles.sectionTitle}>Categorias</Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.categoriasContainer}
-                    >
-                        {categorias.map((cat) => (
-                            <Link
-                                key={cat.nome}
-                                href={{
-                                    pathname: "/ServicoEspecifico",
-                                    params: {servico: cat.nome, icone: cat.icone}
-                                }}
-                                asChild
-                            >
-                                <TouchableOpacity style={styles.categoriaCard}>
-                                    <View style={styles.categoriaIcon}>
-                                        <Ionicons name={cat.icone as any} size={28} color="#0077cc"/>
-                                    </View>
-                                    <Text style={styles.categoriaTexto}>{cat.nome}</Text>
+                        {/* Categorias */}
+                        <Text style={styles.sectionTitle}>Categorias</Text>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.categoriasContainer}
+                        >
+                            {categorias.map((cat) => (
+                                <Link
+                                    key={cat.nome}
+                                    href={{
+                                        pathname: "/ServicoEspecifico",
+                                        params: {servico: cat.nome, icone: cat.icone}
+                                    }}
+                                    asChild
+                                >
+                                    <TouchableOpacity style={styles.categoriaCard}>
+                                        <View style={styles.categoriaIcon}>
+                                            <Ionicons name={cat.icone as any} size={28} color="#0077cc"/>
+                                        </View>
+                                        <Text style={styles.categoriaTexto}>{cat.nome}</Text>
+                                    </TouchableOpacity>
+                                </Link>
+                            ))}
+                        </ScrollView>
+
+                        {/* Lava-jatos próximos */}
+                        <Text style={styles.sectionTitle}>
+                            {locationPermission ? "Próximos de você" : "Lava-jatos disponíveis"}
+                        </Text>
+
+                        {lavaJatos.length === 0 ? (
+                            <View style={styles.emptyContainer}>
+                                <Ionicons name="car-wash-outline" size={64} color="#cccccc" />
+                                <Text style={styles.emptyText}>Nenhum lava-jato encontrado</Text>
+                                <TouchableOpacity
+                                    style={styles.refreshButton}
+                                    onPress={requestLocationPermissionAndLoadData}
+                                >
+                                    <Text style={styles.refreshButtonText}>Tentar Novamente</Text>
                                 </TouchableOpacity>
-                            </Link>
-                        ))}
-                    </ScrollView>
-
-                    {/* Lava-jatos próximos */}
-                    <Text style={styles.sectionTitle}>Próximos de você</Text>
-                    <View style={styles.lavaJatosContainer}>
-                        {lavaJatos.map((lj) => (
-                            <TouchableOpacity
-                                key={lj.id}
-                                style={styles.lavaJatoCard}
-                                onPress={() => navegarParaDetalhes(lj.id)}
-                            >
-                                <Image
-                                    source={{uri: lj.imagem}}
-                                    style={styles.logo}
-                                    resizeMode="cover"
-                                />
-                                <View style={styles.lavaJatoInfo}>
-                                    <View style={styles.lavaJatoHeader}>
-                                        <Text style={styles.nome}>{lj.nome}</Text>
-                                        <TouchableOpacity>
-                                            <FontAwesome name="heart-o" size={20} color="#999"/>
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <View style={styles.ratingContainer}>
-                                        <Ionicons name="star" size={14} color="#ffb700"/>
-                                        <Text style={styles.ratingText}>{lj.avaliacao}</Text>
-                                        <Text style={styles.dot}>•</Text>
-                                        <Text style={styles.distance}>{lj.distancia}</Text>
-                                    </View>
-
-                                    <View style={styles.detailsContainer}>
-                                        <Text style={styles.detailItem}>{lj.tempo}</Text>
-                                        <Text style={styles.dot}>•</Text>
-                                        <Text style={styles.detailItem}>{lj.preco}</Text>
-                                    </View>
-
+                            </View>
+                        ) : (
+                            <View style={styles.lavaJatosContainer}>
+                                {lavaJatos.map((lj) => (
                                     <TouchableOpacity
-                                        style={styles.button}
+                                        key={lj.id}
+                                        style={styles.lavaJatoCard}
                                         onPress={() => navegarParaDetalhes(lj.id)}
                                     >
-                                        <Text style={styles.buttonText}>Ver detalhes</Text>
+                                        <Image
+                                            source={lj.imagemUrl ? { uri: lj.imagemUrl } : require('../assets/lavajato-default.png')}
+                                            style={styles.logo}
+                                            resizeMode="cover"
+                                        />
+                                        <View style={styles.lavaJatoInfo}>
+                                            <View style={styles.lavaJatoHeader}>
+                                                <Text style={styles.nome}>{lj.nome}</Text>
+                                                <TouchableOpacity>
+                                                    <FontAwesome name="heart-o" size={20} color="#999"/>
+                                                </TouchableOpacity>
+                                            </View>
+
+                                            <View style={styles.ratingContainer}>
+                                                <Ionicons name="star" size={14} color="#ffb700"/>
+                                                <Text style={styles.ratingText}>{lj.avaliacaoMedia.toFixed(1)}</Text>
+                                                <Text style={styles.dot}>•</Text>
+                                                <Text style={styles.distance}>
+                                                    {calcularDistancia(lj) || "Distância desconhecida"}
+                                                </Text>
+                                            </View>
+
+                                            <View style={styles.detailsContainer}>
+                                                <Text style={styles.detailItem}>{calcularTempoEstimado(lj)}</Text>
+                                                <Text style={styles.dot}>•</Text>
+                                                <Text style={styles.detailItem}>{formatarPreco(lj)}</Text>
+                                            </View>
+
+                                            <TouchableOpacity
+                                                style={styles.button}
+                                                onPress={() => navegarParaDetalhes(lj.id)}
+                                            >
+                                                <Text style={styles.buttonText}>Ver detalhes</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        ))}
+                                ))}
+                            </View>
+                        )}
                     </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            )}
 
             {/* Bottom Navigation */}
             <View style={styles.tabBar}>
@@ -455,5 +504,37 @@ const styles = StyleSheet.create({
         marginTop: 4,
         color: "#999",
         fontWeight: "500",
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: "#666",
+    },
+    emptyContainer: {
+        padding: 40,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    emptyText: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "#666",
+        marginTop: 16,
+        marginBottom: 20,
+    },
+    refreshButton: {
+        backgroundColor: "#0077cc",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+    },
+    refreshButtonText: {
+        color: "white",
+        fontWeight: "600",
     },
 });

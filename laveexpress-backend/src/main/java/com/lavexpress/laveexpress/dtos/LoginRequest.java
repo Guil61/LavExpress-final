@@ -1,11 +1,23 @@
 package com.lavexpress.laveexpress.dtos;
 
+/**
+ * DTO para requisição de login
+ */
 public class LoginRequest {
 
     private String email;
     private String senha;
 
-    // Getters and setters
+    // Construtores
+    public LoginRequest() {
+    }
+
+    public LoginRequest(String email, String senha) {
+        this.email = email;
+        this.senha = senha;
+    }
+
+    // Getters e Setters
     public String getEmail() {
         return email;
     }
