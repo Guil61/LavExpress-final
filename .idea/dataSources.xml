@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="lavexpressdb@localhost" uuid="47e15cc8-2824-4818-b606-12c1aaf3e750">
+    <data-source source="LOCAL" name="lavexpressdb@localhost [2]" uuid="c47beba6-bffb-4be0-9537-cdb8566c264b">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
