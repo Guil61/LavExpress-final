@@ -54,7 +54,6 @@ public class Usuario implements UserDetails {
 
     }
 
-    // Implementação dos métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + tipoUsuario.name()));
@@ -70,27 +69,6 @@ public class Usuario implements UserDetails {
         return email;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    // Getters e Setters
     public long getId() {
         return id;
     }
