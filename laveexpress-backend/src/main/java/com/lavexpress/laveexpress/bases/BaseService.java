@@ -1,9 +1,11 @@
 package com.lavexpress.laveexpress.bases;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.function.EntityResponse;
 
 import java.util.Optional;
 
@@ -28,7 +30,7 @@ public abstract class BaseService<Entity> {
         getRepository().delete(entity);
     }
 
-    public Optional<Entity> findById(Long id) {
-        return getRepository().findById(id);
-    }
+
+
+
 }

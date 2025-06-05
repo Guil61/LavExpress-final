@@ -1,4 +1,4 @@
-package com.lavexpress.laveexpress.config;
+package com.lavexpress.laveexpress.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

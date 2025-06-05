@@ -16,10 +16,9 @@ public class Veiculo {
     private String marca;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false) // Chave estrangeira para o usuário
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario proprietario;
 
-    // Construtores
     public Veiculo() {
     }
 
@@ -32,7 +31,6 @@ public class Veiculo {
         this.proprietario = proprietario;
     }
 
-    // Getters e setters
     public long getId() {
         return id;
     }

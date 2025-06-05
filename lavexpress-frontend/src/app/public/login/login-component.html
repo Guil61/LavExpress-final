@@ -1,0 +1,73 @@
+<div class="app-container">
+  <div class="content">
+    <div class="logo-section">
+      <img src="assets/images/wasme-logo.png" alt="WashMe" class="logo-icon">
+      <h1 class="app-name">WashMe</h1>
+    </div>
+
+    <div class="welcome-section">
+      <h2>Entrar</h2>
+      <p>Acesse sua conta</p>
+    </div>
+
+    <form class="form-section" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <!-- Mensagem de erro geral -->
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          (input)="clearError()"
+          placeholder="Digite seu email"
+          [class.error]="hasError('email', 'required') || hasError('email', 'email')">
+
+        <!-- Erro específico do campo -->
+        <div class="field-error" *ngIf="email?.touched && email?.invalid">
+          {{ getErrorMessage('email') }}
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Senha</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="senha"
+          (input)="clearError()"
+          placeholder="Digite sua senha"
+          [class.error]="hasError('senha', 'required') || hasError('senha', 'minlength')">
+
+        <!-- Erro específico do campo -->
+        <div class="field-error" *ngIf="senha?.touched && senha?.invalid">
+          {{ getErrorMessage('senha') }}
+        </div>
+      </div>
+
+      <div class="forgot-password">
+        <a href="/esqueci-senha">Esqueci minha senha</a>
+      </div>
+
+      <div class="buttons-section">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="isLoading || loginForm.invalid">
+          <span *ngIf="!isLoading">Entrar</span>
+          <span *ngIf="isLoading">Entrando...</span>
+        </button>
+        <button
+          type="button"
+          (click)="goToRegister()"
+          class="btn btn-secondary"
+          [disabled]="isLoading">
+          Criar conta
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

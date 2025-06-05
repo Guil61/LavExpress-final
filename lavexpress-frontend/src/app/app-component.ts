@@ -3,10 +3,11 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  templateUrl: './app-component.html',
+  styleUrls: ['./app-component.scss']
 })
-export class App {
-  protected title = 'lavexpress-frontend';
+export class AppComponent {
+  title = 'lavexpress-frontend';
 }
