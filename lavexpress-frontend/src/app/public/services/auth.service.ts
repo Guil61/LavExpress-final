@@ -9,6 +9,16 @@ export interface LoginRequest {
   senha: string;
 }
 
+export interface CadastroRequest {
+  nome: string;
+  email: string;
+  senha: string;
+  cpf: string;
+  telefone: string;
+  tipoUsuario: 'CLIENTE' | 'FUNCIONARIO';
+  photoPath?: string;
+}
+
 export interface AuthResponse {
   id: number;
   nome: string;
@@ -26,7 +36,7 @@ export interface ApiError {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8090/auth'; // Ajuste conforme sua API
+  private readonly API_URL = 'http://localhost:8090/auth';
   private currentUserSubject = new BehaviorSubject<AuthResponse | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -36,7 +46,6 @@ export class AuthService {
   ) {
     this.checkExistingToken();
   }
-
 
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, loginData)
@@ -51,28 +60,36 @@ export class AuthService {
       );
   }
 
+  register(cadastroData: CadastroRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/register`, cadastroData)
+      .pipe(
+        tap(response => {
+          this.setAuthData(response);
+        }),
+        catchError(error => {
+          console.error('Erro no cadastro:', error);
+          throw error;
+        })
+      );
+  }
 
   logout(): void {
     this.clearAuthData();
     this.router.navigate(['/login']);
   }
 
-
   isAuthenticated(): boolean {
     const token = this.getToken();
     return !!token && !this.isTokenExpired(token);
   }
 
-
   getToken(): string | null {
     return this.getCookie('auth_token');
   }
 
-
   getCurrentUser(): AuthResponse | null {
     return this.currentUserSubject.value;
   }
-
 
   verificarToken(): Observable<boolean> {
     const token = this.getToken();
@@ -96,7 +113,6 @@ export class AuthService {
       );
   }
 
-
   private setAuthData(response: AuthResponse): void {
     this.setCookie('auth_token', response.token, 1);
 
@@ -110,13 +126,11 @@ export class AuthService {
     this.currentUserSubject.next(response);
   }
 
-
   private clearAuthData(): void {
     this.deleteCookie('auth_token');
     localStorage.removeItem('current_user');
     this.currentUserSubject.next(null);
   }
-
 
   private checkExistingToken(): void {
     const token = this.getToken();
@@ -133,7 +147,6 @@ export class AuthService {
     }
   }
 
-
   private isTokenExpired(token: string): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -144,13 +157,11 @@ export class AuthService {
     }
   }
 
-
   private setCookie(name: string, value: string, days: number): void {
     const expires = new Date();
     expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
     document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;secure;samesite=strict`;
   }
-
 
   private getCookie(name: string): string | null {
     const nameEQ = name + "=";
@@ -162,7 +173,6 @@ export class AuthService {
     }
     return null;
   }
-
 
   private deleteCookie(name: string): void {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;

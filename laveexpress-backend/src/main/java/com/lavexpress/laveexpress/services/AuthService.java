@@ -20,6 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+
 @Service
 public class AuthService implements UserDetailsService {
 
@@ -107,8 +111,23 @@ public class AuthService implements UserDetailsService {
             throw new RuntimeException("CPF já está em uso");
         }
 
+        if (cadastroRequest.photoPath() != null && !cadastroRequest.photoPath().isEmpty()) {
+            log.debug("Validando foto de perfil fornecida no cadastro");
+            if (!isValidBase64Image(cadastroRequest.photoPath())) {
+                log.warn("Formato de imagem inválido fornecido no cadastro para: {}", cadastroRequest.email());
+                throw new RuntimeException("Formato de imagem inválido");
+            }
+            log.debug("Foto de perfil validada com sucesso");
+        }
+
         Usuario usuario = mapper.cadastroRequestToUsuario(cadastroRequest);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+
+        if (cadastroRequest.photoPath() != null && !cadastroRequest.photoPath().isEmpty()) {
+            usuario.setPhotoPath(cadastroRequest.photoPath());
+            log.debug("Foto de perfil definida para o usuário: {}", cadastroRequest.email());
+        }
+
         usuario = usuarioRepository.save(usuario);
 
         String token = jwtService.generateToken(usuario.getEmail());
@@ -120,5 +139,62 @@ public class AuthService implements UserDetailsService {
     public boolean verificarToken(String token) {
         log.debug("Verificando validade do token JWT");
         return jwtService.validateToken(token);
+    }
+
+
+    private boolean isValidBase64Image(String base64String) {
+        if (base64String == null || base64String.trim().isEmpty()) {
+            log.debug("String base64 é nula ou vazia");
+            return false;
+        }
+
+        if (!base64String.startsWith("data:image/")) {
+            log.debug("String base64 não começa com data:image/");
+            return false;
+        }
+
+        try {
+            String[] parts = base64String.split(",");
+            if (parts.length != 2) {
+                log.debug("Formato base64 inválido - não contém exatamente 2 partes");
+                return false;
+            }
+
+            String header = parts[0];
+            String base64Data = parts[1];
+
+            List<String> tiposPermitidos = Arrays.asList(
+                    "data:image/jpeg;base64",
+                    "data:image/jpg;base64",
+                    "data:image/png;base64"
+            );
+
+            if (!tiposPermitidos.contains(header.toLowerCase())) {
+                log.debug("Tipo de imagem não permitido: {}", header);
+                return false;
+            }
+
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+
+            if (decodedBytes.length > 5 * 1024 * 1024) {
+                log.warn("Imagem muito grande: {} bytes (máximo: 5MB)", decodedBytes.length);
+                throw new RuntimeException("Arquivo muito grande! Tamanho máximo permitido: 5MB");
+            }
+
+            log.debug("Imagem base64 validada com sucesso - tamanho: {} bytes", decodedBytes.length);
+            return true;
+
+        } catch (IllegalArgumentException e) {
+            log.debug("Erro ao decodificar base64: {}", e.getMessage());
+            return false;
+        } catch (Exception e) {
+            log.error("Erro inesperado ao validar imagem base64: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
+    public boolean isBase64Image(String referenciaFoto) {
+        return referenciaFoto != null && referenciaFoto.startsWith("data:image/");
     }
 }

@@ -21,6 +21,9 @@ public class LavaJato {
 
     private String cnpj;
 
+    private String latLong;
+
+
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private Usuario proprietario;
@@ -28,7 +31,7 @@ public class LavaJato {
     public LavaJato() {
     }
 
-    public LavaJato(Long id, String nome, String endereco, String telefone, String email, String cnpj, Usuario proprietario) {
+    public LavaJato(Long id, String nome, String endereco, String telefone, String email, String cnpj, Usuario proprietario, String latLong) {
         this.id = id;
         this.nome = nome;
         this.endereco = endereco;
@@ -36,6 +39,7 @@ public class LavaJato {
         this.email = email;
         this.cnpj = cnpj;
         this.proprietario = proprietario;
+        this.latLong = latLong;
     }
 
     public Long getId() {
@@ -93,4 +97,8 @@ public class LavaJato {
     public void setProprietario(Usuario proprietario) {
         this.proprietario = proprietario;
     }
+
+    public String getLatLong() {return latLong;}
+
+    public void setLatLong(String latLong) {this.latLong = latLong;}
 }

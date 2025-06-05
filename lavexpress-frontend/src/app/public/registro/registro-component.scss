@@ -1,0 +1,442 @@
+// Importar módulos do Sass moderno (DEVE vir primeiro)
+@use 'sass:color';
+
+// Importar fonte moderna
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+// Variáveis (mesmas do seu CSS original)
+$primary-blue: #4A90E2;
+$light-blue: #E3F2FD;
+$dark-blue: #2C5AA0;
+$white: #FFFFFF;
+$light-gray: #F8F9FA;
+$text-primary: #2C3E50;
+$text-secondary: #7F8C8D;
+$border-color: #E1E8ED;
+$error-color: #E74C3C;
+$success-color: #27AE60;
+$border-radius: 12px;
+
+// Reset
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 30%, #FFFFFF 100%);
+  color: #2C3E50;
+  overflow-x: hidden;
+  padding: 2rem 0;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.logo-section {
+  margin-bottom: 1.2rem;
+
+  .logo-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 0.5rem;
+    display: block;
+  }
+
+  .app-name {
+    font-size: 2rem;
+    font-weight: 600;
+    color: $primary-blue;
+    letter-spacing: -0.5px;
+  }
+}
+
+.welcome-section {
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $text-secondary;
+    font-weight: 400;
+  }
+}
+
+// Error Message
+.error-message {
+  background: rgba(231, 76, 60, 0.1);
+  color: $error-color;
+  padding: 1rem;
+  border-radius: $border-radius;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  font-size: 0.9rem;
+}
+
+// Form Styles
+.form-section {
+  text-align: left;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: $white;
+    color: $text-primary;
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+
+    &.invalid {
+      border-color: $error-color;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 3rem;
+  }
+
+  .error-text {
+    color: $error-color;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+}
+
+.buttons-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  text-decoration: none;
+  border-radius: $border-radius;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  &.btn-primary {
+    background: $primary-blue;
+    color: $white;
+
+    &:hover:not(:disabled) {
+      background: $dark-blue;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+    }
+  }
+
+  &.btn-secondary {
+    background: $light-gray;
+    color: $text-primary;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+
+    &:hover:not(:disabled) {
+      background: $light-blue;
+      border-color: $primary-blue;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// 📱 Mobile (até 480px)
+@media (max-width: 480px) {
+  .app-container {
+    padding: 1rem;
+  }
+
+  .content {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    max-height: 95vh;
+    max-width: 100%;
+  }
+
+  .logo-section {
+    margin-bottom: 1rem;
+
+    .logo-icon {
+      width: 80px;
+      height: 80px;
+    }
+
+    .app-name {
+      font-size: 1.8rem;
+    }
+  }
+
+  .welcome-section {
+    margin-bottom: 1.2rem;
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .input-group {
+    margin-bottom: 1.2rem;
+
+    input, select {
+      padding: 0.9rem;
+    }
+  }
+
+  .btn {
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+// 💻 Desktop maior (acima de 768px)
+@media (min-width: 768px) {
+  .content {
+    max-width: 600px;
+    padding: 3rem 3rem 3.5rem;
+    border-radius: 32px;
+  }
+
+  .logo-section .logo-icon {
+    width: 120px;
+    height: 120px;
+  }
+
+  .welcome-section h2 {
+    font-size: 2rem;
+  }
+
+  .welcome-section p {
+    font-size: 1.1rem;
+  }
+}
+
+// Photo Upload Styles
+.photo-upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.photo-preview {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid $border-color;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &.has-image {
+    border-color: $primary-blue;
+  }
+
+  .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: $light-gray;
+    color: $text-secondary;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $light-blue;
+      color: $primary-blue;
+    }
+
+    svg {
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+
+    span {
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+
+  .remove-photo-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: $error-color;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+
+    &:hover {
+      background: color.adjust($error-color, $lightness: -10%);
+      transform: scale(1.1);
+    }
+
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
+.photo-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-photo {
+  background: $light-blue;
+  color: $primary-blue;
+  border: 1px solid $primary-blue;
+  padding: 0.6rem 1.2rem;
+  border-radius: $border-radius;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: $primary-blue;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+.photo-info {
+  text-align: center;
+
+  small {
+    color: $text-secondary;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+}
+
+// Loading animation
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.btn:disabled {
+  animation: pulse 2s infinite;
+}
+
+// Mobile adjustments for photo upload
+@media (max-width: 480px) {
+  .photo-preview {
+    width: 100px;
+    height: 100px;
+  }
+
+  .photo-placeholder span {
+    font-size: 0.7rem;
+  }
+
+  .btn-photo {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}

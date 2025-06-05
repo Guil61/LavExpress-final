@@ -8,7 +8,8 @@ public record AuthResponse(
         Long id,
         String nome,
         String email,
-        TipoUsuario tipoUsuario
+        TipoUsuario tipoUsuario,
+        String photoPath
 ) {
     public static AuthResponse fromUsuario(Usuario usuario, String token) {
         return new AuthResponse(
@@ -16,7 +17,8 @@ public record AuthResponse(
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getTipoUsuario()
+                usuario.getTipoUsuario(),
+                usuario.getPhotoPath()
         );
     }
 }

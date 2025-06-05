@@ -30,6 +30,7 @@ public class Usuario implements UserDetails {
 
     private String telefone;
 
+    @Column(columnDefinition = "TEXT")
     private String photoPath;
 
     @Enumerated(EnumType.STRING)
