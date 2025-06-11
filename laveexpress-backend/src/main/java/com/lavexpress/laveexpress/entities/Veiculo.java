@@ -15,6 +15,7 @@ public class Veiculo {
     private String ano;
     private String marca;
 
+
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario proprietario;

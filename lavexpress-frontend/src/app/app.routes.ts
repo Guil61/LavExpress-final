@@ -1,4 +1,3 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
 import {AuthGuard} from './core/auth.guard';
 
@@ -19,6 +18,12 @@ export const routes: Routes = [
     path: 'inicio',
     loadComponent: () => import('./private/inicio-component/inicio-component').then(c => c.InicioComponent),
     canActivate: [AuthGuard] // 👈 Protege a rota
+  },
+  {
+    path: 'lavajato/:id',
+    loadComponent: () => import('./private/lava-jato-detail-component/lava-jato-detail-component').then(m => m.LavajatoDetailComponent),
+    canActivate: [AuthGuard]
+
   },
   { path: '**', redirectTo: '' }
 ];

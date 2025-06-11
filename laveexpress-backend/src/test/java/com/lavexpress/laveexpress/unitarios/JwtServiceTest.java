@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
     public class JwtServiceTest {
 
         private JwtService jwtService;
-        private final String testSecret = "minhachavesecretaparajwtquedevetersuficientecaracteresparaservalida123456789";
         private final long testExpiration = 3600000L;
 
         @BeforeEach
         void setUp() {
             jwtService = new JwtService();
 
+            String testSecret = "minhachavesecretaparajwtquedevetersuficientecaracteresparaservalida123456789";
             ReflectionTestUtils.setField(jwtService, "jwtSecret", testSecret);
             ReflectionTestUtils.setField(jwtService, "jwtExpiration", testExpiration);
         }
