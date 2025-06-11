@@ -1,0 +1,9 @@
+<div class="servicos-container">
+  <h2>Serviços disponíveis</h2>
+
+  <div class="servico-card" *ngFor="let s of servicos" (click)="selecionarServico(s)">
+    <h3>{{ s.nome }}</h3>
+    <p>{{ s.descricao }}</p>
+    <p class="preco">R$ {{ s.preco }},00</p>
+  </div>
+</div>
