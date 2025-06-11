@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<div class="app-layout">
+  <main class="main-content" [class.with-bottom-nav]="showBottomNav">
+    <router-outlet></router-outlet>
+  </main>
+
+  @if (showBottomNav) {
+    <app-bottom-navigation></app-bottom-navigation>
+  }
+</div>

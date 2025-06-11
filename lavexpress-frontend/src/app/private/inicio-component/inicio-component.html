@@ -1,17 +1,92 @@
-<h2>Escolha seu Lava-Jato</h2>
+<div class="app-container">
 
-<div *ngIf="isLoading">Carregando lavajatos...</div>
-<div *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</div>
+  <div class="header">
+    <div class="location-info">
+      <i class="pi pi-map-marker"></i>
+      <span class="location-text">Brasília, DF</span>
+    </div>
+    <div class="user-avatar">
+      <i class="pi pi-user"></i>
+    </div>
+  </div>
 
-<div *ngFor="let lj of lavajatos" class="lavajato-card" (click)="selectLavajato(lj.id)">
-  <img
-    class="lavajato-img"
-    [src]="lj.imagemUrl"
-    [alt]="lj.nome"
-  />
-  <div class="info">
-    <h3>{{ lj.nome }}</h3>
-    <p>{{ lj.endereco }}</p>
-    <p>Avaliação: {{ lj.avaliacao }} ⭐</p>
+  <div class="search-container">
+    <form [formGroup]="searchForm">
+      <div class="search-box">
+        <i class="pi pi-search search-icon"></i>
+        <input
+          type="text"
+          placeholder="Buscar lava-jatos próximos..."
+          formControlName="searchQuery"
+          class="search-input">
+      </div>
+    </form>
+  </div>
+
+  <div class="quick-filters">
+    <div class="filters-scroll">
+      <button type="button" class="filter-chip active">
+        <span>Todos</span>
+      </button>
+      <button type="button" class="filter-chip">
+        <i class="pi pi-star-fill"></i>
+        <span>Bem avaliados</span>
+      </button>
+      <button type="button" class="filter-chip">
+        <i class="pi pi-map-marker"></i>
+        <span>Próximos</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    @for (lavajato of lavajatosList; track lavajato.id) {
+      <div class="lavajato-item" (click)="verDetalhes(lavajato.id)">
+        <div class="item-image">
+          <img [src]="lavajato.imagem" [alt]="lavajato.nome" class="lavajato-img">
+          <div class="status-badge" [ngClass]="lavajato.status">
+            <i class="pi" [ngClass]="lavajato.status === 'aberto' ? 'pi-check-circle' : 'pi-times-circle'"></i>
+            <span>{{ lavajato.status === 'aberto' ? 'Aberto' : 'Fechado' }}</span>
+          </div>
+        </div>
+
+        <div class="item-content">
+          <div class="item-header">
+            <h3 class="lavajato-name">{{ lavajato.nome }}</h3>
+            <div class="rating">
+              <i class="pi pi-star-fill rating-star"></i>
+              <span class="rating-value">{{ lavajato.avaliacao }}</span>
+            </div>
+          </div>
+
+          <div class="item-details">
+            <div class="detail-row">
+              <i class="pi pi-map-marker detail-icon"></i>
+              <span class="detail-text">{{ lavajato.endereco }}</span>
+            </div>
+
+          </div>
+
+          <div class="item-footer">
+            <div class="delivery-info">
+              <i class="pi pi-clock"></i>
+              <span>25-35 min</span>
+            </div>
+            <button class="action-btn" (click)="agendar(lavajato.id); $event.stopPropagation()">
+              <i class="pi pi-calendar-plus"></i>
+              <span>Agendar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (lavajatosList.length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-search empty-icon"></i>
+        <h3>Nenhum lava-jato encontrado</h3>
+        <p>Tente ajustar sua busca ou filtros</p>
+      </div>
+    }
   </div>
 </div>

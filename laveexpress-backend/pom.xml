@@ -21,6 +21,14 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
+
 		<!-- Spring Boot Starter Data JPA for integrating with databases -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

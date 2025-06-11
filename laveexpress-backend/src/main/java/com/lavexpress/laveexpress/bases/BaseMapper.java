@@ -10,7 +10,7 @@ public abstract class BaseMapper<Entity,  EntityRequest, EntityResponse, EntityF
 
     public abstract EntityResponse entityToResponse(Entity entity);
 
-//    public abstract Entity filterToEntity(EntityFilter filter);
-//
-//    public abstract EntityFilter entityToFilter(Entity entity);
+    public abstract Entity filterToEntity(EntityFilter filter);
+
+    public abstract EntityFilter entityToFilter(Entity entity);
 }

@@ -1,0 +1,11 @@
+<div class="bottom-nav">
+  @for (item of navItems; track item.key) {
+    <div
+      class="nav-item"
+      [class.active]="isActive(item.route)"
+      (click)="navigateTo(item.route)">
+      <i class="pi" [ngClass]="item.icon"></i>
+      <span>{{ item.label }}</span>
+    </div>
+  }
+</div>

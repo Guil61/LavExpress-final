@@ -1,0 +1,27 @@
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  overflow-x: hidden;
+
+  // Adicionar padding apenas quando bottom nav estiver visível
+  &.with-bottom-nav {
+    padding-bottom: 80px;
+
+    // No desktop, remover padding bottom pois não há bottom nav
+    @media (min-width: 1024px) {
+      padding-bottom: 0;
+    }
+  }
+}
+
+// Garantir que o body tenha as configurações corretas
+:host {
+  display: block;
+  min-height: 100vh;
+}

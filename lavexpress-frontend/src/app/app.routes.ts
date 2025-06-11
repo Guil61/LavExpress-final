@@ -15,15 +15,6 @@ export const routes: Routes = [
     loadComponent: () => import('./public/registro/registro-component').then(c => c.RegistroComponent)
   },
   {
-    path: 'lavajatos',
-    loadComponent: () => import('./public/lavajatos-list/lavajatos-list.component').then(c => c.LavajatosListComponent)
-  },
-  {
-    path: 'lavajato/:id',
-    loadComponent: () => import('./public/lavajato-detail/lavajato-detail.component').then(m => m.LavajatoDetailComponent)
-  },
-
-  {
     path: 'inicio',
     loadComponent: () => import('./private/inicio-component/inicio-component').then(c => c.InicioComponent),
     canActivate: [AuthGuard] // 👈 Protege a rota

@@ -46,8 +46,17 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Endpoints públicos
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/veiculos/**").permitAll()
+                        // PERMITIR TODOS OS ENDPOINTS DE LAVA-JATO
+                        .requestMatchers("/lava-jato/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/lava-jato/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/lava-jato/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/lava-jato/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/lava-jato/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/lava-jato/**").permitAll()
+                        // Outros endpoints precisam autenticação
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -60,14 +69,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:4200",
-                "http://localhost:3000",
-                "https://sua-app-em-producao.com"
-        ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
+        // PERMITIR TUDO - CORS LIBERADO
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
