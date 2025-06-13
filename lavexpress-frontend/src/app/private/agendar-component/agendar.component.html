@@ -1,0 +1,247 @@
+<div class="app-container">
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title">
+        <h1>Agendar Serviço</h1>
+        <span class="subtitle" *ngIf="lavajato">{{ lavajato.nome }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="pi pi-spinner"></i>
+      <p>Carregando informações...</p>
+    </div>
+  </div>
+
+  <div *ngIf="hasError" class="error-state">
+    <div class="error-content">
+      <i class="pi pi-exclamation-triangle error-icon"></i>
+      <h3>Ops! Algo deu errado</h3>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" (click)="loadInitialData()">
+        <i class="pi pi-refresh"></i>
+        Tentar novamente
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError" class="agendamento-container">
+
+    <div class="progress-steps">
+      <div class="step-item"
+           [ngClass]="{'active': step === 1, 'completed': step > 1, 'valid': isStepValid(1)}"
+           (click)="goToStep(1)">
+        <div class="step-number">
+          <i class="pi pi-check" *ngIf="step > 1"></i>
+          <span *ngIf="step <= 1">1</span>
+        </div>
+        <span class="step-label">Serviço</span>
+      </div>
+
+      <div class="step-divider"></div>
+
+      <div class="step-item"
+           [ngClass]="{'active': step === 2, 'completed': step > 2, 'valid': isStepValid(2)}"
+           (click)="goToStep(2)">
+        <div class="step-number">
+          <i class="pi pi-check" *ngIf="step > 2"></i>
+          <span *ngIf="step <= 2">2</span>
+        </div>
+        <span class="step-label">Veículo</span>
+      </div>
+
+      <div class="step-divider"></div>
+
+      <div class="step-item"
+           [ngClass]="{'active': step === 3, 'completed': step > 3, 'valid': isStepValid(3)}">
+        <div class="step-number">
+          <i class="pi pi-check" *ngIf="step > 3"></i>
+          <span *ngIf="step <= 3">3</span>
+        </div>
+        <span class="step-label">Data/Hora</span>
+      </div>
+    </div>
+
+    <form [formGroup]="agendamentoForm" (ngSubmit)="onSubmit()" class="agendamento-form">
+
+      <div class="step-content" *ngIf="step === 1">
+        <div class="step-header">
+          <h2>Escolha o serviço</h2>
+          <p>Selecione o serviço que deseja agendar</p>
+        </div>
+
+        <div class="services-grid" *ngIf="servicos.length > 0">
+          <div class="service-option"
+               *ngFor="let servico of servicos"
+               [ngClass]="{'selected': agendamentoForm.get('servicoId')?.value == servico.id}"
+               (click)="agendamentoForm.patchValue({servicoId: servico.id})">
+            <div class="service-info">
+              <div class="service-icon">
+                <i class="pi pi-car"></i>
+              </div>
+              <div class="service-details">
+                <h4>{{ servico.descricao }}</h4>
+                <p class="service-price">{{ formatarPreco(servico.valor) }}</p>
+              </div>
+            </div>
+            <div class="selection-indicator">
+              <i class="pi pi-check"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="servicos.length === 0">
+          <i class="pi pi-info-circle"></i>
+          <p>Nenhum serviço disponível</p>
+        </div>
+      </div>
+
+      <div class="step-content" *ngIf="step === 2">
+        <div class="step-header">
+          <h2>Escolha o veículo</h2>
+          <p>Selecione qual veículo receberá o serviço</p>
+        </div>
+
+        <div class="vehicles-grid" *ngIf="veiculos.length > 0">
+          <div class="vehicle-option"
+               *ngFor="let veiculo of veiculos"
+               [ngClass]="{'selected': agendamentoForm.get('veiculoId')?.value == veiculo.id}"
+               (click)="agendamentoForm.patchValue({veiculoId: veiculo.id})">
+            <div class="vehicle-info">
+              <div class="vehicle-icon">
+                <i class="pi pi-car"></i>
+              </div>
+              <div class="vehicle-details">
+                <h4>{{ veiculo.marca }} {{ veiculo.modelo }}</h4>
+                <p class="vehicle-specs">{{ veiculo.ano }} • {{ veiculo.cor }}</p>
+                <p class="vehicle-plate">{{ veiculo.placa }}</p>
+              </div>
+            </div>
+            <div class="selection-indicator">
+              <i class="pi pi-check"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="veiculos.length === 0">
+          <i class="pi pi-info-circle"></i>
+          <p>Nenhum veículo cadastrado</p>
+          <button type="button" class="btn btn-secondary" (click)="router.navigate(['/veiculos/novo'])">
+            <i class="pi pi-plus"></i>
+            Cadastrar veículo
+          </button>
+        </div>
+      </div>
+
+      <div class="step-content" *ngIf="step === 3">
+        <div class="step-header">
+          <h2>Data e horário</h2>
+          <p>Escolha quando deseja que o serviço seja realizado</p>
+        </div>
+
+        <div class="datetime-section">
+          <div class="field">
+            <label for="dataHorario">Data e Hora do Agendamento</label>
+            <input
+              id="dataHorario"
+              type="datetime-local"
+              formControlName="dataHorario"
+              [min]="getMinDateTime()"
+              class="form-input"
+              [ngClass]="{'error': agendamentoForm.get('dataHorario')?.invalid && agendamentoForm.get('dataHorario')?.touched}">
+
+            <div class="error-message"
+                 *ngIf="agendamentoForm.get('dataHorario')?.invalid && agendamentoForm.get('dataHorario')?.touched">
+              <span *ngIf="agendamentoForm.get('dataHorario')?.errors?.['required']">
+                Data e horário são obrigatórios
+              </span>
+              <span *ngIf="agendamentoForm.get('dataHorario')?.errors?.['dataPassada']">
+                A data deve ser no futuro
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="observacoes">Observações (opcional)</label>
+            <textarea
+              id="observacoes"
+              formControlName="observacoes"
+              class="form-input"
+              rows="3"
+              placeholder="Alguma observação especial para o serviço?"></textarea>
+          </div>
+        </div>
+
+        <div class="summary-section">
+          <h3>Resumo do Agendamento</h3>
+          <div class="summary-card">
+            <div class="summary-item">
+              <span class="label">Serviço:</span>
+              <span class="value">{{ getServicoById(agendamentoForm.get('servicoId')?.value)?.descricao }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Valor:</span>
+              <span class="value price">{{ formatarPreco(getServicoById(agendamentoForm.get('servicoId')?.value)?.valor || 0) }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Veículo:</span>
+              <span class="value">{{ formatarVeiculo(getVeiculoById(agendamentoForm.get('veiculoId')?.value)!) }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Lavajato:</span>
+              <span class="value">{{ lavajato?.nome }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button"
+                class="btn btn-secondary"
+                *ngIf="step > 1"
+                (click)="prevStep()">
+          <i class="pi pi-arrow-left"></i>
+          Voltar
+        </button>
+
+        <button type="button"
+                class="btn btn-primary"
+                *ngIf="step < maxSteps"
+                (click)="nextStep()"
+                [disabled]="!isStepValid(step)">
+          Próximo
+          <i class="pi pi-arrow-right"></i>
+        </button>
+
+        <button type="submit"
+                class="btn btn-success"
+                *ngIf="step === maxSteps"
+                [disabled]="agendamentoForm.invalid">
+          <i class="pi pi-check"></i>
+          Confirmar Agendamento
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <app-confirm-modal
+    [isVisible]="showConfirmModal"
+    [title]="'Confirmar Agendamento'"
+    [message]="getConfirmationMessage()"
+    [confirmLabel]="'Sim, Agendar'"
+    [cancelLabel]="'Cancelar'"
+    [loading]="isConfirming"
+    (confirmed)="onConfirmAgendamento()"
+    (cancelled)="onCancelConfirmation()">
+  </app-confirm-modal>
+  <app-toast></app-toast>
+
+</div>

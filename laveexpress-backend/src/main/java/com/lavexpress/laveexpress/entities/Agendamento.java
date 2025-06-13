@@ -1,5 +1,6 @@
 package com.lavexpress.laveexpress.entities;
 
+import com.lavexpress.laveexpress.enums.StatusAgendamento;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -12,21 +13,23 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime horario;
+    private StatusAgendamento statusAgendamento;
 
-    private Double valor;
-
-    private String tipo;
+    private LocalDateTime dataHorario;
 
     @ManyToOne
     @JoinColumn(name = "servico_id", nullable = false)
     private Servico servico;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "veiculo_id", nullable = false)
+    private Veiculo veiculo;
+
+    @ManyToOne
     @JoinColumn(name = "lava_jato_id", nullable = false)
     private LavaJato lavaJato;
 
@@ -34,13 +37,12 @@ public class Agendamento {
     public Agendamento() {
     }
 
-    public Agendamento(LocalDateTime horario, Double valor, String tipo, Servico servico, Usuario usuario, LavaJato lavaJato) {
-        this.horario = horario;
-        this.valor = valor;
-        this.tipo = tipo;
+    public Agendamento(LocalDateTime dataHorario, Servico servico, Usuario usuario, LavaJato lavaJato, StatusAgendamento statusAgendamento) {
+        this.dataHorario = dataHorario;
         this.servico = servico;
         this.usuario = usuario;
         this.lavaJato = lavaJato;
+        this.statusAgendamento = statusAgendamento;
     }
 
     public Long getId() {
@@ -51,28 +53,12 @@ public class Agendamento {
         this.id = id;
     }
 
-    public LocalDateTime getHorario() {
-        return horario;
+    public LocalDateTime getDataHorario() {
+        return dataHorario;
     }
 
-    public void setHorario(LocalDateTime horario) {
-        this.horario = horario;
-    }
-
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setDataHorario(LocalDateTime dataHorario) {
+        this.dataHorario = dataHorario;
     }
 
     public Servico getServico() {
@@ -97,5 +83,21 @@ public class Agendamento {
 
     public void setLavaJato(LavaJato lavaJato) {
         this.lavaJato = lavaJato;
+    }
+
+    public StatusAgendamento getStatusAgendamento() {
+        return statusAgendamento;
+    }
+
+    public void setStatusAgendamento(StatusAgendamento statusAgendamento) {
+        this.statusAgendamento = statusAgendamento;
+    }
+
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(Veiculo veiculo) {
+        this.veiculo = veiculo;
     }
 }

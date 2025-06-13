@@ -50,11 +50,9 @@ export class InicioComponent implements OnInit {
 
   private async initializeComponent(): Promise<void> {
     try {
-      // Obter localização do usuário
       this.userLocation = await this.lavajatosService.obterLocalizacaoUsuario();
       console.log('Localização do usuário:', this.userLocation);
 
-      // Carregar lava-jatos próximos
       this.loadLavajatosProximos();
 
     } catch (error) {
@@ -64,7 +62,6 @@ export class InicioComponent implements OnInit {
   }
 
   private setupFormSubscriptions(): void {
-    // Observar mudanças no campo de busca
     this.searchForm.get('searchQuery')?.valueChanges.subscribe(value => {
       if (value && value.trim().length > 2) {
         this.onSearchChange(value.trim());
@@ -103,7 +100,7 @@ export class InicioComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erro ao carregar lava-jatos próximos:', error);
-          this.loadLavajatosDefault(); // Fallback para busca padrão
+          this.loadLavajatosDefault();
         }
       });
   }
@@ -261,12 +258,14 @@ export class InicioComponent implements OnInit {
   }
 
   calculateDistance(lat: number, lng: number): string {
+    // TODO: Implementar cálculo de distância real usando coordenadas do usuário
     return '0.5 km'; // Mock
   }
 
   sortBy(criteria: 'distance' | 'rating' | 'price'): void {
     switch(criteria) {
       case 'distance':
+        // TODO: Implementar ordenação por distância
         break;
       case 'rating':
         this.lavajatosList.sort((a, b) => b.avaliacao - a.avaliacao);

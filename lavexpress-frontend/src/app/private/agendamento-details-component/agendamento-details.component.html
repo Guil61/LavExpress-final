@@ -1,0 +1,163 @@
+<div class="app-container">
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title">
+        <h1>Detalhes do Agendamento</h1>
+        <span class="subtitle">Agendamento #{{ agendamentoId }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="pi pi-spinner"></i>
+      <p>Carregando detalhes...</p>
+    </div>
+  </div>
+
+  <div *ngIf="hasError" class="error-state">
+    <div class="error-content">
+      <i class="pi pi-exclamation-triangle error-icon"></i>
+      <h3>Ops! Algo deu errado</h3>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" (click)="loadAgendamentoDetails()">
+        <i class="pi pi-refresh"></i>
+        Tentar novamente
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError && agendamento" class="agendamento-details-container">
+
+    <!-- Status Card -->
+    <div class="status-card">
+      <div class="status-header">
+        <div class="status-badge" [style.background-color]="getStatusColor()">
+          <i class="pi pi-calendar"></i>
+          <span>{{ getStatusLabel() }}</span>
+        </div>
+        <div class="agendamento-id">#{{ agendamento.id }}</div>
+      </div>
+      <div class="data-agendamento">
+        <i class="pi pi-clock"></i>
+        <span>{{ formatarDataHora(agendamento.dataHorario) }}</span>
+      </div>
+    </div>
+
+    <!-- Serviço Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <i class="pi pi-wrench"></i>
+          Serviço
+        </h3>
+      </div>
+      <div class="card-content" *ngIf="servico">
+        <div class="service-info">
+          <h4 class="service-name">{{ servico.descricao }}</h4>
+          <p class="service-price">{{ formatarPreco(servico.valor) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Veículo Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <i class="pi pi-car"></i>
+          Veículo
+        </h3>
+      </div>
+      <div class="card-content" *ngIf="veiculo">
+        <div class="vehicle-info">
+          <div class="vehicle-main">
+            <h4 class="vehicle-name">{{ formatarVeiculo() }}</h4>
+            <p class="vehicle-plate">{{ veiculo.placa }}</p>
+          </div>
+          <div class="vehicle-details">
+            <div class="detail-item">
+              <span class="label">Cor:</span>
+              <span class="value">{{ veiculo.cor }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lavajato Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <i class="pi pi-building"></i>
+          Lavajato
+        </h3>
+      </div>
+      <div class="card-content" *ngIf="lavajato">
+        <div class="lavajato-info">
+          <div class="lavajato-image">
+            <img [src]="lavajato.imagem" [alt]="lavajato.nome" class="lavajato-img">
+          </div>
+          <div class="lavajato-details">
+            <h4 class="lavajato-name">{{ lavajato.nome }}</h4>
+
+            <div class="contact-actions">
+              <button class="contact-btn" (click)="abrirMapa()" *ngIf="lavajato.endereco">
+                <i class="pi pi-map-marker"></i>
+                <span>{{ lavajato.endereco }}</span>
+              </button>
+
+              <button class="contact-btn" (click)="ligarLavajato()" *ngIf="lavajato.telefone">
+                <i class="pi pi-phone"></i>
+                <span>{{ lavajato.telefone }}</span>
+              </button>
+
+              <button class="contact-btn" (click)="emailLavajato()" *ngIf="lavajato.email">
+                <i class="pi pi-envelope"></i>
+                <span>{{ lavajato.email }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="actions-section">
+      <button
+        class="btn btn-secondary"
+        *ngIf="canEditAgendamento()"
+        (click)="editarAgendamento()">
+        <i class="pi pi-pencil"></i>
+        Editar Agendamento
+      </button>
+
+      <button
+        class="btn btn-danger"
+        *ngIf="canCancelAgendamento()"
+        (click)="confirmarCancelamento()">
+        <i class="pi pi-times"></i>
+        Cancelar Agendamento
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Modal de Cancelamento -->
+  <app-confirm-modal
+    [isVisible]="showCancelModal"
+    [title]="'Cancelar Agendamento'"
+    [message]="'Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita.'"
+    [confirmLabel]="'Sim, Cancelar'"
+    [cancelLabel]="'Não, Manter'"
+    [loading]="isCanceling"
+    (confirmed)="cancelarAgendamento()"
+    (cancelled)="onCancelConfirmation()">
+  </app-confirm-modal>
+
+</div>
+
+<app-toast></app-toast>

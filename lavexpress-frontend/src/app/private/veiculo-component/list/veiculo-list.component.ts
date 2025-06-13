@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe, NgClass, CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { VeiculoService, VeiculoResponse } from '../../../public/services/veiculo.service';
-import { AuthService } from '../../../public/services/auth.service';
+import { VeiculoService, VeiculoResponse } from '../../../services/services/veiculo.service';
+import { AuthService } from '../../../services/services/auth.service';
 import {ConfirmModalComponent} from '../../../shared/confirm-dialog-component/confirm-modal.component';
 import {ToastComponent, ToastService} from '../../../shared/message-component/message.component';
 

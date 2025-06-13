@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { LavajatosService, Lavajato } from '../../services/lavajatos.service';
-import { ServicosService, Servico } from '../../public/services/servicos.service';
+import { ServicosService, Servico } from '../../services/services/servicos.service';
 
 @Component({
   selector: 'app-lavajato-details',

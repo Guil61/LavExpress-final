@@ -52,7 +52,6 @@ public interface LavaJatoRepository extends BaseRepository<LavaJato> {
                                    @Param("raioKm") Double raioKm,
                                    Pageable pageable);
 
-    // Query PostgreSQL SIMPLIFICADA combinando filtros
     @Query(value = "SELECT * FROM (" +
             "  SELECT l.*, " +
             "    COALESCE((" +

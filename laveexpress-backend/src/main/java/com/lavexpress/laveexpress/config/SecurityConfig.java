@@ -74,6 +74,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/servicos/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/servicos/**").permitAll()
 
+                        // PERMITIR TODOS OS ENDPOINTS DE AGENDAMENTO
+                        .requestMatchers("/agendamento/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/agendamento/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/agendamento/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/agendamento/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/agendamento/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/agendamento/**").permitAll()
+
                         // Outros endpoints precisam autenticação
                         .anyRequest().authenticated()
                 )

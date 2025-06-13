@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastComponent, ToastService } from '../../shared/message-component/message.component';
 import { ConfirmModalComponent } from '../../shared/confirm-dialog-component/confirm-modal.component';
-import { AuthService } from '../../public/services/auth.service';
-import { UserService, ProfileUpdateRequest, PasswordChangeRequest } from '../../public/services/user.service';
+import { AuthService } from '../../services/services/auth.service';
+import { UserService, ProfileUpdateRequest, PasswordChangeRequest } from '../../services/services/user.service';
 import {Router} from '@angular/router';
 
 @Component({

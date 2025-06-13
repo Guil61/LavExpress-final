@@ -1,0 +1,105 @@
+<div class="app-container">
+
+  <div class="header">
+    <div class="page-info">
+      <div class="page-title">
+        <h1>Meus Agendamentos</h1>
+        <span class="subtitle">Histórico de serviços agendados</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="refresh-btn" (click)="onRefresh()" [disabled]="isLoading">
+        <i class="pi pi-refresh" [ngClass]="{'pi-spin': isLoading}"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="pi pi-spinner"></i>
+      <p>Carregando seus agendamentos...</p>
+    </div>
+  </div>
+
+  <div *ngIf="hasError" class="error-state">
+    <div class="error-content">
+      <i class="pi pi-exclamation-triangle error-icon"></i>
+      <h3>Ops! Algo deu errado</h3>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" (click)="loadAgendamentos()">
+        <i class="pi pi-refresh"></i>
+        Tentar novamente
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError" class="agendamentos-container">
+
+    <div *ngIf="agendamentos.length === 0" class="empty-state">
+      <i class="pi pi-calendar empty-icon"></i>
+      <h3>Nenhum agendamento encontrado</h3>
+      <p>Você ainda não possui agendamentos.<br>Que tal agendar seu primeiro serviço?</p>
+      <button class="btn btn-primary" (click)="novoAgendamento()">
+        <i class="pi pi-plus"></i>
+        Fazer primeiro agendamento
+      </button>
+    </div>
+
+    <div *ngIf="agendamentos.length > 0" class="agendamentos-list">
+      <div
+        class="agendamento-card"
+        *ngFor="let agendamento of agendamentos; trackBy: trackByAgendamentoId"
+        (click)="verDetalhes(agendamento)"
+        [ngClass]="{'ativo': isAgendamentoAtivo(agendamento.statusAgendamento)}">
+
+        <div class="card-header">
+          <div class="lavajato-info">
+            <div class="lavajato-image">
+              <img [src]="agendamento.lavajatoImagem" [alt]="agendamento.lavajatoNome" class="lavajato-img">
+            </div>
+            <div class="lavajato-details">
+              <h4 class="lavajato-name">{{ agendamento.lavajatoNome }}</h4>
+              <p class="veiculo-info">{{ agendamento.veiculoInfo }}</p>
+            </div>
+          </div>
+          <div class="status-badge" [style.background-color]="getStatusColor(agendamento.statusAgendamento)">
+            <i [ngClass]="getStatusIcon(agendamento.statusAgendamento)"></i>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="servico-info">
+            <h5 class="servico-nome">{{ agendamento.servicoDescricao }}</h5>
+            <p class="servico-preco">{{ formatarPreco(agendamento.servicoValor) }}</p>
+          </div>
+
+          <div class="agendamento-datetime">
+            <i class="pi pi-clock"></i>
+            <span>{{ formatarDataHora(agendamento.dataHorario) }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="status-info">
+            <span class="status-label" [style.color]="getStatusColor(agendamento.statusAgendamento)">
+              {{ getStatusLabel(agendamento.statusAgendamento) }}
+            </span>
+          </div>
+          <div class="action-indicator">
+            <i class="pi pi-chevron-right"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="agendamentos.length > 0" class="bottom-action">
+      <button class="btn btn-primary novo-agendamento-btn" (click)="novoAgendamento()">
+        <i class="pi pi-plus"></i>
+        Novo Agendamento
+      </button>
+    </div>
+
+  </div>
+
+</div>

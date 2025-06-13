@@ -75,4 +75,6 @@ public class ServicoService extends BaseService<Servico> {
                 .collect(Collectors.toList());
     }
 
+
+
 }

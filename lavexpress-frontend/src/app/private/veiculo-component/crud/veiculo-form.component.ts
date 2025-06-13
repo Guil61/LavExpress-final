@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { VeiculoService, VeiculoResponse } from '../../../public/services/veiculo.service';
-import { AuthService } from '../../../public/services/auth.service';
+import { VeiculoService, VeiculoResponse } from '../../../services/services/veiculo.service';
+import { AuthService } from '../../../services/services/auth.service';
 import {ToastComponent, ToastService} from '../../../shared/message-component/message.component';
 
 @Component({

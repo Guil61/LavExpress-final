@@ -52,6 +52,31 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 
+
+  // agendar
+
+  {
+    path: 'agendar',
+    loadComponent: () => import('./private/agendar-component/agendar.component').then(c => c.AgendarComponent),
+    canActivate: [AuthGuard]
+  },
+
+  //agendamento
+
+  {
+    path: 'agendamento/:id',
+    loadComponent: () => import('./private/agendamento-details-component/agendamento-details.component').then(c => c.AgendamentoDetailsComponent),
+    canActivate: [AuthGuard]
+  },
+
+  //agendamento list
+
+  {
+    path: 'agendamentos',
+    loadComponent: () => import('./private/agendamento-list-component/agendamento-list.component').then(c => c.AgendamentosListComponent),
+    canActivate: [AuthGuard]
+  },
+
   // User profile
   {
     path: 'profile',
