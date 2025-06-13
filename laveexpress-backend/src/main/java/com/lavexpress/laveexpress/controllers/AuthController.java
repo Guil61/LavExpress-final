@@ -1,11 +1,10 @@
 package com.lavexpress.laveexpress.controllers;
 
-import com.lavexpress.laveexpress.dtos.AuthResponse;
-import com.lavexpress.laveexpress.dtos.CadastroRequest;
-import com.lavexpress.laveexpress.dtos.LoginRequest;
+import com.lavexpress.laveexpress.dtos.*;
 import com.lavexpress.laveexpress.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,5 +34,40 @@ public class AuthController {
         String token = authHeader.replace("Bearer ", "");
         boolean valido = authService.verificarToken(token);
         return ResponseEntity.ok(valido);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<AuthResponse> updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        AuthResponse response = authService.updateProfile(profileUpdateRequest, email);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<Void> changePassword(@RequestBody PasswordChangeRequest passwordChangeRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        authService.changePassword(passwordChangeRequest, email);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/profile/photo")
+    public ResponseEntity<AuthResponse> updateProfilePhoto(@RequestBody PhotoUploadRequest photoUploadRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        AuthResponse response = authService.updateProfilePhoto(photoUploadRequest, email);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/profile/photo")
+    public ResponseEntity<AuthResponse> removeProfilePhoto() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        AuthResponse response = authService.removeProfilePhoto(email);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<AuthResponse> getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        AuthResponse response = authService.getCurrentUser(email);
+        return ResponseEntity.ok(response);
     }
 }

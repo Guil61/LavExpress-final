@@ -1,0 +1,83 @@
+<div class="app-container">
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title">
+        <h1>Detalhes do Lavajato</h1>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="pi pi-spinner"></i>
+      <p>Carregando detalhes...</p>
+    </div>
+  </div>
+
+  <div *ngIf="hasError" class="error-state">
+    <div class="error-content">
+      <i class="pi pi-exclamation-triangle error-icon"></i>
+      <h3>Ops! Algo deu errado</h3>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" (click)="loadLavajatoDetails()">
+        <i class="pi pi-refresh"></i>
+        Tentar novamente
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError && lavajato" class="lavajato-details-container">
+
+    <div class="card">
+      <div class="lavajato-header">
+        <div class="image-container">
+          <img [src]="lavajato.imagem" [alt]="lavajato.nome" class="lavajato-image">
+        </div>
+        <div class="header-info">
+          <h2 class="lavajato-name">{{ lavajato.nome }}</h2>
+        </div>
+      </div>
+
+      <div class="services-section">
+        <h3>
+          <i class="pi pi-list"></i>
+          Serviços Oferecidos
+        </h3>
+
+        <div *ngIf="servicos.length === 0" class="empty-services">
+          <i class="pi pi-info-circle"></i>
+          <p>Nenhum serviço cadastrado ainda.</p>
+        </div>
+
+        <div class="services-list" *ngIf="servicos.length > 0">
+          <div class="service-item" *ngFor="let servico of servicos; trackBy: trackByServiceId">
+            <div class="service-info">
+              <div class="service-icon">
+                <i class="pi pi-car"></i>
+              </div>
+              <div class="service-details">
+                <h4 class="service-name">{{ servico.descricao }}</h4>
+              </div>
+            </div>
+            <div class="service-price">
+              {{ formatarPreco(servico.valor) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="action-section" *ngIf="servicos.length > 0">
+          <button class="btn btn-primary agendar-btn" (click)="agendar()">
+            <i class="pi pi-calendar-plus"></i>
+            Agendar Serviço
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

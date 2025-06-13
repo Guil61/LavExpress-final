@@ -46,7 +46,6 @@ export class RegistroComponent {
       photoPath: ['']
     }, { validators: this.passwordMatchValidator });
 
-    // Limpar mensagem de erro quando o usuário modificar qualquer campo
     this.cadastroForm.valueChanges.subscribe(() => {
       if (this.errorMessage) {
         this.errorMessage = '';
@@ -54,7 +53,6 @@ export class RegistroComponent {
     });
   }
 
-  // Validador customizado para confirmar senha
   passwordMatchValidator(form: FormGroup) {
     const senha = form.get('senha');
     const confirmarSenha = form.get('confirmarSenha');
@@ -65,7 +63,6 @@ export class RegistroComponent {
     return null;
   }
 
-  // Formatação automática do CPF
   formatCPF(event: any) {
     let value = event.target.value.replace(/\D/g, '');
     if (value.length <= 11) {
@@ -74,7 +71,6 @@ export class RegistroComponent {
     }
   }
 
-  // Formatação automática do telefone
   formatTelefone(event: any) {
     let value = event.target.value.replace(/\D/g, '');
     if (value.length <= 11) {
@@ -87,28 +83,24 @@ export class RegistroComponent {
     }
   }
 
-  // Seleção de arquivo de imagem
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
 
-      // Validar se é imagem
       if (!file.type.includes('image/')) {
         this.errorMessage = 'Por favor, selecione apenas arquivos de imagem.';
         this.clearErrorAfterDelay();
         return;
       }
 
-      // Validar tamanho (5MB)
       if (file.size > 5 * 1024 * 1024) {
         this.errorMessage = 'O tamanho máximo permitido é 5MB.';
         this.clearErrorAfterDelay();
         return;
       }
 
-      // Validar tipos permitidos
       const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png'];
       if (!tiposPermitidos.includes(file.type.toLowerCase())) {
         this.errorMessage = 'Tipo de arquivo não suportado. Use apenas JPG ou PNG.';
@@ -121,7 +113,6 @@ export class RegistroComponent {
     }
   }
 
-  // Processar preview da imagem
   private processImagePreview(file: File): void {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -132,7 +123,6 @@ export class RegistroComponent {
     reader.readAsDataURL(file);
   }
 
-  // Remover foto selecionada
   removeSelectedPhoto(): void {
     this.selectedFile = null;
     this.profileImagePreview = null;
@@ -233,7 +223,6 @@ export class RegistroComponent {
     });
   }
 
-  // Métodos auxiliares para validação no template
   isFieldInvalid(fieldName: string): boolean {
     const field = this.cadastroForm.get(fieldName);
     return !!(field && field.invalid && field.touched);

@@ -177,14 +177,13 @@ export class InicioComponent implements OnInit {
     console.log('Filtro aplicado:', filterType, value);
   }
 
-  // =============== MÉTODOS DE AÇÃO ===============
 
   verDetalhes(lavajatoId: number): void {
-    this.router.navigate(['/lavajato-detalhes', lavajatoId]);
+    this.router.navigate(['/lavajato', lavajatoId]);
   }
 
   agendar(lavajatoId: number): void {
-    this.router.navigate(['/agendar', lavajatoId]);
+    this.router.navigate(['/lavajato', lavajatoId]);
   }
 
   navigateTo(route: string): void {
@@ -210,7 +209,6 @@ export class InicioComponent implements OnInit {
     this.loadLavajatosProximos();
   }
 
-  // =============== MÉTODOS UTILITÁRIOS ===============
 
   private transformData(lavajatos: Lavajato[]): any[] {
     return lavajatos.map(lavajato => ({
@@ -233,7 +231,6 @@ export class InicioComponent implements OnInit {
     this.lavajatosList = [];
   }
 
-  // Método para filtros rápidos
   applyQuickFilter(filterType: string): void {
     switch(filterType) {
       case 'todos':
@@ -248,7 +245,6 @@ export class InicioComponent implements OnInit {
     }
   }
 
-  // Métodos utilitários mantidos para compatibilidade
   getStarsArray(rating: number): string {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
@@ -265,14 +261,12 @@ export class InicioComponent implements OnInit {
   }
 
   calculateDistance(lat: number, lng: number): string {
-    // TODO: Implementar cálculo de distância real usando coordenadas do usuário
     return '0.5 km'; // Mock
   }
 
   sortBy(criteria: 'distance' | 'rating' | 'price'): void {
     switch(criteria) {
       case 'distance':
-        // TODO: Implementar ordenação por distância
         break;
       case 'rating':
         this.lavajatosList.sort((a, b) => b.avaliacao - a.avaliacao);

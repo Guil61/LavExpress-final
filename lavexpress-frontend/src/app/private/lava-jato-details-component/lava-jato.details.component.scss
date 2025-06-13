@@ -1,0 +1,447 @@
+$primary-blue: #4A90E2;
+$light-blue: #E3F2FD;
+$dark-blue: #2C5AA0;
+$white: #FFFFFF;
+$light-gray: #F8F9FA;
+$medium-gray: #E9ECEF;
+$text-primary: #2C3E50;
+$text-secondary: #7F8C8D;
+$text-light: #BDC3C7;
+$border-color: #E1E8ED;
+$success-color: #27AE60;
+$error-color: #E74C3C;
+$warning-color: #F39C12;
+$shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$border-radius: 12px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.app-container {
+  min-height: 100vh;
+  background: $light-gray;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: $white;
+  border-bottom: 1px solid $medium-gray;
+
+  .page-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: $light-gray;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: $text-secondary;
+
+      &:hover {
+        background: $primary-blue;
+        color: $white;
+      }
+
+      .pi {
+        font-size: 1.1rem;
+      }
+    }
+
+    .page-title {
+      h1 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: $text-primary;
+        margin: 0;
+        line-height: 1.2;
+      }
+    }
+  }
+}
+
+.lavajato-details-container {
+  padding: 1.5rem;
+}
+
+.card {
+  background: $white;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(74, 144, 226, 0.15);
+  }
+}
+
+.lavajato-header {
+  padding: 2rem;
+  text-align: center;
+  border-bottom: 1px solid $medium-gray;
+
+  .image-container {
+    margin-bottom: 1.5rem;
+
+    .lavajato-image {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid $white;
+      box-shadow: $shadow;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.02);
+        border-color: $primary-blue;
+      }
+    }
+  }
+
+  .header-info {
+    .lavajato-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0;
+      line-height: 1.2;
+    }
+  }
+}
+
+.services-section {
+  padding: 2rem;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid $light-blue;
+
+    i {
+      color: $primary-blue;
+      font-size: 1.3rem;
+    }
+  }
+
+  .empty-services {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: $text-secondary;
+
+    i {
+      font-size: 3rem;
+      color: $text-light;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+  }
+
+  .services-list {
+    margin-bottom: 2rem;
+
+    .service-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background: $light-gray;
+      border-radius: $border-radius;
+      border: 1px solid $border-color;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: $white;
+        box-shadow: $shadow;
+        transform: translateX(4px);
+        border-color: $primary-blue;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .service-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+
+        .service-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 50px;
+          height: 50px;
+          background: $light-blue;
+          border-radius: 50%;
+          color: $primary-blue;
+
+          i {
+            font-size: 1.4rem;
+          }
+        }
+
+        .service-details {
+          .service-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: $text-primary;
+            margin: 0;
+            line-height: 1.3;
+          }
+        }
+      }
+
+      .service-price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: $primary-blue;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  .action-section {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid $medium-gray;
+
+    .agendar-btn {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      min-width: 200px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  min-height: 400px;
+
+  .loading-spinner {
+    text-align: center;
+    color: $text-secondary;
+
+    .pi-spinner {
+      font-size: 3rem;
+      color: $primary-blue;
+      margin-bottom: 1rem;
+      animation: spin 1s linear infinite;
+    }
+
+    p {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.error-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  min-height: 400px;
+
+  .error-content {
+    text-align: center;
+    max-width: 400px;
+
+    .error-icon {
+      font-size: 4rem;
+      color: $error-color;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      color: $text-primary;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      color: $text-secondary;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    &::before {
+      display: none;
+    }
+  }
+
+  i {
+    font-size: 1rem;
+  }
+
+  &.btn-primary {
+    background: $primary-blue;
+    color: $white;
+
+    &:hover:not(:disabled) {
+      background: $dark-blue;
+      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+  }
+
+  &.btn-secondary {
+    background: $light-gray;
+    color: $text-primary;
+    border: 1px solid $border-color;
+
+    &:hover:not(:disabled) {
+      background: $light-blue;
+      border-color: $primary-blue;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 1rem;
+
+    .page-info .page-title h1 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .lavajato-details-container {
+    padding: 1rem;
+  }
+
+  .card {
+    border-radius: 8px;
+  }
+
+  .lavajato-header {
+    padding: 1.5rem;
+
+    .image-container .lavajato-image {
+      width: 150px;
+      height: 150px;
+    }
+
+    .header-info .lavajato-name {
+      font-size: 1.5rem;
+    }
+  }
+
+  .services-section {
+    padding: 1.5rem;
+
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    .services-list .service-item {
+      padding: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .service-price {
+        margin-left: 0;
+        align-self: flex-end;
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 900px;
+    margin: 0 auto;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.1);
+  }
+
+  .lavajato-details-container {
+    padding: 2rem;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+}

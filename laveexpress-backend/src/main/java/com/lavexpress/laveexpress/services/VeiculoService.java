@@ -13,6 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class VeiculoService extends BaseService<Veiculo> {
 
@@ -51,6 +54,9 @@ public class VeiculoService extends BaseService<Veiculo> {
                     if (request.marca() != null)
                         veiculo.setMarca(request.marca());
 
+                    if (request.cor() != null)
+                        veiculo.setCor(request.cor());
+
                     return veiculoRepository.save(veiculo);
                 })
                 .orElseThrow(() -> new RuntimeException("Não foi possível encontrar o veiculo"));
@@ -66,6 +72,13 @@ public class VeiculoService extends BaseService<Veiculo> {
     public Veiculo findById(Long id) {
         return veiculoRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Veiculo nao encontrado para o id" + id));
+    }
+
+    public List<VeiculoResponse> findByUsuarioId(Long usuarioId) {
+        List<Veiculo> veiculos = veiculoRepository.findByProprietarioId(usuarioId);
+        return veiculos.stream()
+                .map(veiculoMapper::entityToResponse)
+                .collect(Collectors.toList());
     }
 
 

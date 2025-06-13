@@ -1,8 +1,6 @@
 package com.lavexpress.laveexpress.services;
 
-import com.lavexpress.laveexpress.dtos.AuthResponse;
-import com.lavexpress.laveexpress.dtos.CadastroRequest;
-import com.lavexpress.laveexpress.dtos.LoginRequest;
+import com.lavexpress.laveexpress.dtos.*;
 import com.lavexpress.laveexpress.entities.Usuario;
 import com.lavexpress.laveexpress.mappers.UsuarioMapper;
 import com.lavexpress.laveexpress.repositories.UsuarioRepository;
@@ -197,4 +195,128 @@ public class AuthService implements UserDetailsService {
     public boolean isBase64Image(String referenciaFoto) {
         return referenciaFoto != null && referenciaFoto.startsWith("data:image/");
     }
+    public AuthResponse updateProfile(ProfileUpdateRequest request, String email) {
+        log.info("Atualizando perfil para email: {}", email);
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado para atualização: {}", email);
+                    return new RuntimeException("Usuário não encontrado");
+                });
+
+        if (!request.email().equals(usuario.getEmail()) &&
+                usuarioRepository.existsByEmail(request.email())) {
+            log.warn("Tentativa de alterar para email já em uso: {}", request.email());
+            throw new RuntimeException("Email já está em uso");
+        }
+
+        if (request.nome() != null && !request.nome().trim().isEmpty()) {
+            usuario.setNome(request.nome().trim());
+        }
+
+        if (request.email() != null && !request.email().trim().isEmpty()) {
+            usuario.setEmail(request.email().trim());
+        }
+
+        if (request.telefone() != null) {
+            usuario.setTelefone(request.telefone().trim());
+        }
+
+        usuario = usuarioRepository.save(usuario);
+
+        String newToken = jwtService.generateToken(usuario.getEmail());
+
+        log.info("Perfil atualizado com sucesso para: {}", usuario.getEmail());
+        return AuthResponse.fromUsuario(usuario, newToken);
+    }
+
+
+    public void changePassword(PasswordChangeRequest request, String email) {
+        log.info("Alterando senha para email: {}", email);
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado para alteração de senha: {}", email);
+                    return new RuntimeException("Usuário não encontrado");
+                });
+
+        if (!passwordEncoder.matches(request.senhaAtual(), usuario.getSenha())) {
+            log.warn("Senha atual incorreta para: {}", email);
+            throw new RuntimeException("Senha atual incorreta");
+        }
+
+        if (request.novaSenha() == null || request.novaSenha().length() < 6) {
+            log.warn("Nova senha inválida para: {}", email);
+            throw new RuntimeException("A nova senha deve ter pelo menos 6 caracteres");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(request.novaSenha()));
+        usuarioRepository.save(usuario);
+
+        log.info("Senha alterada com sucesso para: {}", email);
+    }
+
+
+    public AuthResponse updateProfilePhoto(PhotoUploadRequest request, String email) {
+        log.info("Atualizando foto de perfil para email: {}", email);
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado para atualização de foto: {}", email);
+                    return new RuntimeException("Usuário não encontrado");
+                });
+
+        if (request.photoPath() != null && !request.photoPath().trim().isEmpty()) {
+            if (!isValidBase64Image(request.photoPath())) {
+                log.warn("Formato de imagem inválido para: {}", email);
+                throw new RuntimeException("Formato de imagem inválido");
+            }
+            usuario.setPhotoPath(request.photoPath());
+            log.debug("Foto de perfil atualizada para: {}", email);
+        } else {
+            log.warn("Dados de imagem não fornecidos para: {}", email);
+            throw new RuntimeException("Dados da imagem são obrigatórios");
+        }
+
+        usuario = usuarioRepository.save(usuario);
+
+        String token = jwtService.generateToken(usuario.getEmail());
+
+        log.info("Foto de perfil atualizada com sucesso para: {}", email);
+        return AuthResponse.fromUsuario(usuario, token);
+    }
+
+
+    public AuthResponse removeProfilePhoto(String email) {
+        log.info("Removendo foto de perfil para email: {}", email);
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado para remoção de foto: {}", email);
+                    return new RuntimeException("Usuário não encontrado");
+                });
+
+        usuario.setPhotoPath(null);
+        usuario = usuarioRepository.save(usuario);
+
+        String token = jwtService.generateToken(usuario.getEmail());
+
+        log.info("Foto de perfil removida com sucesso para: {}", email);
+        return AuthResponse.fromUsuario(usuario, token);
+    }
+
+
+    public AuthResponse getCurrentUser(String email) {
+        log.debug("Buscando dados atuais do usuário: {}", email);
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado: {}", email);
+                    return new RuntimeException("Usuário não encontrado");
+                });
+
+        String token = jwtService.generateToken(usuario.getEmail());
+        return AuthResponse.fromUsuario(usuario, token);
+    }
+
 }

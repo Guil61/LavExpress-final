@@ -17,7 +17,7 @@ export interface Lavajato {
   totalAvaliacoes: number;
   status: string;
   tipos: string[];
-  photoPath?: string; // Base64 da foto
+  photoPath?: string;
 }
 
 // Interface para os filtros

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -35,13 +36,13 @@ public class VeiculoController  {
     }
 
     @PostMapping(value = "/new")
-    public ResponseEntity<VeiculoResponse> createNew(VeiculoRequest request) {
+    public ResponseEntity<VeiculoResponse> createNew(@RequestBody VeiculoRequest request) {
         var response = getEntityService().create(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<VeiculoResponse> update(VeiculoRequest request, @PathVariable Long id) {
+    public ResponseEntity<VeiculoResponse> update(@RequestBody VeiculoRequest request, @PathVariable Long id) {
         var response = getEntityService().update(request, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -60,5 +61,11 @@ public class VeiculoController  {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(value = "/usuario/{usuarioId}")
+    public ResponseEntity<List<VeiculoResponse>> listarPorUsuario(@PathVariable Long usuarioId) {
+        var veiculos = getEntityService().findByUsuarioId(usuarioId);
+        return new ResponseEntity<>(veiculos, HttpStatus.OK);
     }
 }

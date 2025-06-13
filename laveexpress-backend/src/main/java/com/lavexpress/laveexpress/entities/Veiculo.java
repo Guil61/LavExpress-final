@@ -14,6 +14,7 @@ public class Veiculo {
     private String modelo;
     private String ano;
     private String marca;
+    private String cor;
 
 
     @ManyToOne
@@ -23,13 +24,14 @@ public class Veiculo {
     public Veiculo() {
     }
 
-    public Veiculo(long id, String placa, String modelo, String ano, String marca, Usuario proprietario) {
+    public Veiculo(long id, String placa, String modelo, String ano, String marca, Usuario proprietario, String cor) {
         this.id = id;
         this.placa = placa;
         this.modelo = modelo;
         this.ano = ano;
         this.marca = marca;
         this.proprietario = proprietario;
+        this.cor = cor;
     }
 
     public long getId() {
@@ -78,5 +80,13 @@ public class Veiculo {
 
     public void setProprietario(Usuario proprietario) {
         this.proprietario = proprietario;
+    }
+
+    public String getCor() {
+        return cor;
+    }
+
+    public void setCor(String cor) {
+        this.cor = cor;
     }
 }

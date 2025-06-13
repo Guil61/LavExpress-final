@@ -1,0 +1,128 @@
+<div class="app-container">
+  <app-toast></app-toast>
+
+  <app-confirm-modal
+    [isVisible]="showConfirmModal"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    [loading]="confirmModalLoading"
+    confirmLabel="Sim, excluir"
+    cancelLabel="Cancelar"
+    (confirmed)="onConfirmExclusao()"
+    (cancelled)="onCancelExclusao()">
+  </app-confirm-modal>
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="voltar()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title" *ngIf="veiculo">
+        <h1>{{ veiculo.marca }} {{ veiculo.modelo }}</h1>
+        <span class="subtitle">Detalhes do veículo</span>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="content">
+    <div class="loading-container" *ngIf="loading">
+      <div class="loading-spinner">
+        <i class="pi pi-spinner pi-spin"></i>
+        <p>Carregando detalhes...</p>
+      </div>
+    </div>
+
+    <div class="error-state" *ngIf="error">
+      <div class="error-content">
+        <i class="pi pi-exclamation-triangle error-icon"></i>
+        <h3>Erro ao carregar veículo</h3>
+        <p>{{ errorMessage || 'Não foi possível carregar os detalhes do veículo.' }}</p>
+        <button class="btn btn-primary" (click)="recarregar()">
+          <i class="pi pi-refresh"></i>
+          Tentar Novamente
+        </button>
+      </div>
+    </div>
+
+    <div class="veiculo-details" *ngIf="veiculo && !loading && !error">
+      <!-- Card Principal -->
+      <div class="main-card">
+        <div class="veiculo-header">
+          <div class="veiculo-avatar">
+            <i class="pi pi-car"></i>
+          </div>
+          <div class="veiculo-info">
+            <h2>{{ veiculo.marca }} {{ veiculo.modelo }}</h2>
+            <div class="veiculo-subtitle">
+              <span class="placa">{{ veiculo.placa }}</span>
+              <span class="separator">•</span>
+              <span class="ano">{{ veiculo.ano }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <div class="detail-label">
+              <i class="pi pi-tag detail-icon"></i>
+              Marca
+            </div>
+            <div class="detail-value">{{ veiculo.marca }}</div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">
+              <i class="pi pi-car detail-icon"></i>
+              Modelo
+            </div>
+            <div class="detail-value">{{ veiculo.modelo }}</div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">
+              <i class="pi pi-id-card detail-icon"></i>
+              Placa
+            </div>
+            <div class="detail-value placa-formatted">{{ formatarPlaca(veiculo.placa) }}</div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">
+              <i class="pi pi-calendar detail-icon"></i>
+              Ano
+            </div>
+            <div class="detail-value">{{ veiculo.ano }}</div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">
+              <i class="pi pi-palette detail-icon"></i>
+              Cor
+            </div>
+            <div class="detail-value">
+              <span class="cor-badge" [style.background-color]="getCorHex(veiculo.cor)">
+                {{ veiculo.cor }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Histórico Card (placeholder) -->
+      <div class="history-card">
+        <h3>Histórico de Serviços</h3>
+        <div class="empty-history">
+          <i class="pi pi-calendar-times"></i>
+          <p>Nenhum serviço agendado ainda</p>
+          <button class="btn btn-outline" (click)="agendarVeiculo()">
+            Agendar Primeiro Serviço
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

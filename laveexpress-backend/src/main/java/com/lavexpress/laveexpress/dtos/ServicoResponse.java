@@ -4,5 +4,6 @@ public record ServicoResponse(
         Long id,
         String descricao,
         String tipo,
-        Double valor
+        Double valor,
+        Long lavaJatoId
 ) {}

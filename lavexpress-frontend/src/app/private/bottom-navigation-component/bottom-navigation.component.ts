@@ -34,7 +34,7 @@ export class BottomNavigationComponent implements OnInit {
       key: 'appointments'
     },
     {
-      route: '/perfil',
+      route: '/profile',
       icon: 'pi-user',
       label: 'Perfil',
       key: 'profile'
@@ -49,7 +49,6 @@ export class BottomNavigationComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         this.currentRoute = event.url;
       });
-    // Definir rota inicial
     this.currentRoute = this.router.url;
   }
 

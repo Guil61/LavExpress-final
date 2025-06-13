@@ -1,0 +1,275 @@
+<div class="app-container">
+  <app-toast></app-toast>
+
+  <app-confirm-modal
+    [isVisible]="showConfirmModal"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    [loading]="confirmModalLoading"
+    confirmLabel="Sim, remover"
+    cancelLabel="Cancelar"
+    (confirmed)="onConfirmAction()"
+    (cancelled)="onCancelConfirm()">
+  </app-confirm-modal>
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="voltar()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title">
+        <h1>Detalhes do Perfil</h1>
+        <span class="subtitle">Gerencie suas informações pessoais</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-details-container">
+    <div class="card">
+      <div class="card-header">
+        <h2>Informações do Usuário</h2>
+      </div>
+
+      <div class="profile-info">
+        <div class="avatar-section">
+          <div class="avatar-container">
+            <img
+              *ngIf="!showDefaultAvatar && profileImage"
+              [src]="profileImage"
+              class="profile-avatar"
+              alt="Foto de perfil"
+              (error)="onImageError()"
+            />
+
+            <div
+              *ngIf="showDefaultAvatar || !profileImage"
+              class="profile-avatar avatar-placeholder">
+              <i class="pi pi-user avatar-icon"></i>
+            </div>
+
+            <div *ngIf="uploadingImage" class="upload-overlay">
+              <i class="pi pi-spin pi-spinner"></i>
+            </div>
+          </div>
+
+          <div class="avatar-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="triggerFileUpload()"
+              [disabled]="uploadingImage">
+              <i [class]="uploadingImage ? 'pi pi-spin pi-spinner' : 'pi pi-camera'"></i>
+              {{ uploadingImage ? 'Enviando...' : 'Alterar Foto' }}
+            </button>
+
+            <button
+              *ngIf="!showDefaultAvatar && profileImage"
+              type="button"
+              class="btn btn-danger"
+              (click)="removePhoto()">
+              <i class="pi pi-trash"></i>
+              Remover Foto
+            </button>
+          </div>
+
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            style="display: none"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+
+        <div class="user-form">
+          <form [formGroup]="profileForm">
+            <div class="form-section">
+              <h3>Informações Pessoais</h3>
+
+              <div class="field">
+                <label for="nome">Nome *</label>
+                <input
+                  id="nome"
+                  type="text"
+                  class="form-input"
+                  formControlName="nome"
+                  placeholder="Digite seu nome completo"
+                  [class.error]="isFieldInvalid('nome')"
+                />
+                <small
+                  *ngIf="isFieldInvalid('nome')"
+                  class="error-message">
+                  Nome deve ter pelo menos 2 caracteres
+                </small>
+              </div>
+
+              <div class="field">
+                <label for="email">Email *</label>
+                <input
+                  id="email"
+                  type="email"
+                  class="form-input"
+                  formControlName="email"
+                  placeholder="Digite seu email"
+                  [class.error]="isFieldInvalid('email')"
+                />
+                <small
+                  *ngIf="isFieldInvalid('email')"
+                  class="error-message">
+                  Email deve ser válido
+                </small>
+              </div>
+
+              <div class="field">
+                <label for="telefone">Telefone</label>
+                <input
+                  id="telefone"
+                  type="tel"
+                  class="form-input"
+                  formControlName="telefone"
+                  (input)="formatTelefone($event)"
+                  placeholder="(61) 99999-9999"
+                  [class.error]="isFieldInvalid('telefone')"
+                />
+                <small
+                  *ngIf="isFieldInvalid('telefone')"
+                  class="error-message">
+                  Telefone deve estar no formato (XX) XXXXX-XXXX
+                </small>
+              </div>
+
+              <div class="actions">
+                <button
+                  *ngIf="!editingBasicInfo"
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="toggleBasicInfoEdit()">
+                  <i class="pi pi-pencil"></i>
+                  Editar
+                </button>
+
+                <ng-container *ngIf="editingBasicInfo">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="saveBasicInfo()"
+                    [disabled]="savingBasicInfo || profileForm.get('nome')?.invalid || profileForm.get('email')?.invalid">
+                    <i [class]="savingBasicInfo ? 'pi pi-spin pi-spinner' : 'pi pi-check'"></i>
+                    {{ savingBasicInfo ? 'Salvando...' : 'Salvar' }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="toggleBasicInfoEdit()"
+                    [disabled]="savingBasicInfo">
+                    <i class="pi pi-times"></i>
+                    Cancelar
+                  </button>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Alterar Senha</h3>
+
+              <div class="field">
+                <label for="senhaAtual">Senha Atual *</label>
+                <input
+                  id="senhaAtual"
+                  type="password"
+                  class="form-input"
+                  formControlName="senhaAtual"
+                  placeholder="Digite sua senha atual"
+                  [class.error]="isFieldInvalid('senhaAtual')"
+                />
+              </div>
+
+              <div class="field">
+                <label for="novaSenha">Nova Senha *</label>
+                <input
+                  id="novaSenha"
+                  type="password"
+                  class="form-input"
+                  formControlName="novaSenha"
+                  placeholder="Digite a nova senha (mín. 6 caracteres)"
+                  [class.error]="isFieldInvalid('novaSenha')"
+                />
+                <small
+                  *ngIf="isFieldInvalid('novaSenha')"
+                  class="error-message">
+                  A senha deve ter pelo menos 6 caracteres
+                </small>
+              </div>
+
+              <div class="field">
+                <label for="confirmarSenha">Confirmar Nova Senha *</label>
+                <input
+                  id="confirmarSenha"
+                  type="password"
+                  class="form-input"
+                  formControlName="confirmarSenha"
+                  placeholder="Confirme a nova senha"
+                  [class.error]="passwordMismatch"
+                />
+                <small
+                  *ngIf="passwordMismatch"
+                  class="error-message">
+                  As senhas não coincidem
+                </small>
+              </div>
+
+              <div class="actions">
+                <button
+                  *ngIf="!editingPassword"
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="togglePasswordEdit()">
+                  <i class="pi pi-lock"></i>
+                  Alterar Senha
+                </button>
+
+                <ng-container *ngIf="editingPassword">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="savePassword()"
+                    [disabled]="passwordFormInvalid() || savingPassword">
+                    <i [class]="savingPassword ? 'pi pi-spin pi-spinner' : 'pi pi-check'"></i>
+                    {{ savingPassword ? 'Salvando...' : 'Salvar' }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="togglePasswordEdit()"
+                    [disabled]="savingPassword">
+                    <i class="pi pi-times"></i>
+                    Cancelar
+                  </button>
+                </ng-container>
+
+
+
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <button
+    *ngIf="!showDefaultAvatar && profileImage"
+    type="button"
+    class="btn btn-danger"
+    (click)="sair()">
+    <i class="pi pi-sign-out"></i>
+    Sair
+  </button>
+</div>

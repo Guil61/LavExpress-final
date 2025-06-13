@@ -1,0 +1,117 @@
+<div class="app-container">
+  <!-- Toast Component -->
+  <app-toast></app-toast>
+
+  <!-- Confirm Modal Component -->
+  <app-confirm-modal
+    [isVisible]="showConfirmModal"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    [loading]="confirmModalLoading"
+    confirmLabel="Sim, excluir"
+    cancelLabel="Cancelar"
+    (confirmed)="onConfirmExclusao()"
+    (cancelled)="onCancelExclusao()">
+  </app-confirm-modal>
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="voltar()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title">
+        <h1>Meus Veículos</h1>
+        <span class="subtitle">{{ veiculosList.length }} veículo{{ veiculosList.length !== 1 ? 's' : '' }} cadastrado{{ veiculosList.length !== 1 ? 's' : '' }}</span>
+      </div>
+    </div>
+    <button class="novo-veiculo-btn" (click)="novoVeiculo()">
+      <i class="pi pi-plus"></i>
+      <span>Novo</span>
+    </button>
+  </div>
+
+  <div class="content">
+    @for (veiculo of veiculosList; track veiculo.id) {
+      <div class="veiculo-item" (click)="verDetalhes(veiculo.id)">
+        <div class="item-image">
+          <div class="veiculo-avatar tipo-carro">
+            <i class="veiculo-icon pi pi-car"></i>
+          </div>
+          <div class="veiculo-info-badge">
+            <span class="ano">{{ veiculo.ano }}</span>
+          </div>
+        </div>
+
+        <div class="item-content">
+          <div class="item-header">
+            <div class="veiculo-main-info">
+              <h3 class="veiculo-nome">{{ veiculo.marca }} {{ veiculo.modelo }}</h3>
+              <span class="veiculo-placa">{{ veiculo.placa }}</span>
+            </div>
+            <div class="veiculo-actions">
+              <button class="action-icon-btn" (click)="editarVeiculo(veiculo.id); $event.stopPropagation()" title="Editar">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button class="action-icon-btn delete" (click)="confirmarExclusao(veiculo.id); $event.stopPropagation()" title="Excluir">
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="item-details">
+            <div class="detail-row">
+              <i class="pi pi-palette detail-icon"></i>
+              <span class="detail-text">{{ veiculo.cor }}</span>
+            </div>
+          </div>
+
+          <div class="item-footer">
+            <div class="ultimo-agendamento">
+              <i class="pi pi-info-circle"></i>
+              <span>Nenhum agendamento realizado</span>
+            </div>
+            <button class="action-btn" (click)="agendarVeiculo(veiculo.id); $event.stopPropagation()">
+              <i class="pi pi-calendar-plus"></i>
+              <span>Agendar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (veiculosList.length === 0 && !loading && !error) {
+      <div class="empty-state">
+        <i class="fas fa-car empty-icon"></i>
+        <h3>Nenhum veículo cadastrado</h3>
+        <p>Cadastre seu primeiro veículo para começar a agendar serviços de lava-jato</p>
+        <button class="btn" (click)="novoVeiculo()">
+          <i class="pi pi-plus"></i>
+          <span>Cadastrar Veículo</span>
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="loading-spinner">
+        <i class="pi pi-spinner pi-spin"></i>
+        <p>Carregando veículos...</p>
+      </div>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-state">
+      <div class="error-content">
+        <i class="pi pi-exclamation-triangle error-icon"></i>
+        <h3>Erro ao carregar veículos</h3>
+        <p>{{ errorMessage || 'Não foi possível carregar a lista de veículos. Tente novamente.' }}</p>
+        <button class="btn" (click)="recarregar()">
+          <i class="pi pi-refresh"></i>
+          <span>Tentar Novamente</span>
+        </button>
+      </div>
+    </div>
+  }
+</div>

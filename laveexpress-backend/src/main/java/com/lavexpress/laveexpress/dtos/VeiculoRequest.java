@@ -5,6 +5,7 @@ public record VeiculoRequest(
         String modelo,
         String ano,
         String marca,
+        String cor,
         Long usuarioId
 
 ) {

@@ -1,0 +1,131 @@
+<div class="app-container">
+  <app-toast></app-toast>
+
+  <div class="header">
+    <div class="page-info">
+      <button class="back-btn" (click)="voltar()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="page-title">
+        <h1>{{ isEditMode ? 'Editar Veículo' : 'Novo Veículo' }}</h1>
+        <span class="subtitle">{{ isEditMode ? 'Altere os dados do seu veículo' : 'Cadastre um novo veículo' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="form-container">
+      <form [formGroup]="veiculoForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <!-- Placa -->
+          <div class="form-group">
+            <label for="placa" class="form-label">
+              Placa <span class="required">*</span>
+            </label>
+            <input
+              id="placa"
+              type="text"
+              class="form-input"
+              formControlName="placa"
+              placeholder="ABC-1234 ou ABC1D23"
+              [class.error]="isFieldInvalid('placa')"
+              (blur)="formatarPlaca()"
+              maxlength="8">
+            <div class="error-message" *ngIf="isFieldInvalid('placa')">
+              <span *ngIf="veiculoForm.get('placa')?.hasError('required')">Placa é obrigatória</span>
+              <span *ngIf="veiculoForm.get('placa')?.hasError('pattern')">Formato de placa inválido</span>
+            </div>
+          </div>
+
+          <!-- Marca -->
+          <div class="form-group">
+            <label for="marca" class="form-label">
+              Marca <span class="required">*</span>
+            </label>
+            <select
+              id="marca"
+              class="form-select"
+              formControlName="marca"
+              [class.error]="isFieldInvalid('marca')">
+              <option value="">Selecione a marca</option>
+              <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
+            </select>
+            <div class="error-message" *ngIf="isFieldInvalid('marca')">
+              Marca é obrigatória
+            </div>
+          </div>
+
+          <!-- Modelo -->
+          <div class="form-group">
+            <label for="modelo" class="form-label">
+              Modelo <span class="required">*</span>
+            </label>
+            <input
+              id="modelo"
+              type="text"
+              class="form-input"
+              formControlName="modelo"
+              placeholder="Ex: Civic, Corolla, Onix"
+              [class.error]="isFieldInvalid('modelo')">
+            <div class="error-message" *ngIf="isFieldInvalid('modelo')">
+              Modelo é obrigatório
+            </div>
+          </div>
+
+          <!-- Ano -->
+          <div class="form-group">
+            <label for="ano" class="form-label">
+              Ano <span class="required">*</span>
+            </label>
+            <select
+              id="ano"
+              class="form-select"
+              formControlName="ano"
+              [class.error]="isFieldInvalid('ano')">
+              <option value="">Selecione o ano</option>
+              <option *ngFor="let ano of anos" [value]="ano">{{ ano }}</option>
+            </select>
+            <div class="error-message" *ngIf="isFieldInvalid('ano')">
+              Ano é obrigatório
+            </div>
+          </div>
+
+          <!-- Cor -->
+          <div class="form-group">
+            <label for="cor" class="form-label">
+              Cor <span class="required">*</span>
+            </label>
+            <select
+              id="cor"
+              class="form-select"
+              formControlName="cor"
+              [class.error]="isFieldInvalid('cor')">
+              <option value="">Selecione a cor</option>
+              <option *ngFor="let cor of cores" [value]="cor">{{ cor }}</option>
+            </select>
+            <div class="error-message" *ngIf="isFieldInvalid('cor')">
+              Cor é obrigatória
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="voltar()"
+            [disabled]="loading">
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="veiculoForm.invalid || loading">
+            <i class="pi pi-spinner pi-spin" *ngIf="loading"></i>
+            {{ loading ? 'Salvando...' : (isEditMode ? 'Atualizar' : 'Cadastrar') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,7 @@ public record AuthResponse(
         Long id,
         String nome,
         String email,
+        String telefone,
         TipoUsuario tipoUsuario,
         String photoPath
 ) {
@@ -17,6 +18,7 @@ public record AuthResponse(
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
+                usuario.getTelefone(),
                 usuario.getTipoUsuario(),
                 usuario.getPhotoPath()
         );

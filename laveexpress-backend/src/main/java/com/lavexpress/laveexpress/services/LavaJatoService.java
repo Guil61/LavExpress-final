@@ -41,7 +41,6 @@ public class LavaJatoService extends BaseService<LavaJato> {
     }
 
     public LavaJatoResponse create(LavaJatoRequest lavaJatoRequest) {
-        log.info("Iniciando criação de lava-jato: {}", lavaJatoRequest.nome());
 
         if (lavaJatoRequest.photoPath() != null && !lavaJatoRequest.photoPath().isEmpty()) {
             log.debug("Validando foto fornecida para o lava-jato");
@@ -55,7 +54,6 @@ public class LavaJatoService extends BaseService<LavaJato> {
         var entity = lavaJatoMapper.requestToEntity(lavaJatoRequest);
         getRepository().save(entity);
 
-        log.info("Lava-jato criado com sucesso: {} (ID: {})", entity.getNome(), entity.getId());
         return lavaJatoMapper.entityToResponse(entity);
     }
 

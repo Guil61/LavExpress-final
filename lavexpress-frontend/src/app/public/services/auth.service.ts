@@ -25,6 +25,7 @@ export interface AuthResponse {
   email: string;
   telefone: string;
   token: string;
+  photoPath?: string;
 }
 
 export interface ApiError {
@@ -94,7 +95,10 @@ export class AuthService {
   verificarToken(): Observable<boolean> {
     const token = this.getToken();
     if (!token) {
-      return new Observable(observer => observer.next(false));
+      return new Observable<boolean>(observer => {
+        observer.next(false);
+        observer.complete();
+      });
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -112,7 +116,6 @@ export class AuthService {
         })
       );
   }
-
   private setAuthData(response: AuthResponse): void {
     this.setCookie('auth_token', response.token, 1);
 
@@ -139,7 +142,10 @@ export class AuthService {
     if (token && userData && !this.isTokenExpired(token)) {
       const user = JSON.parse(userData);
       this.currentUserSubject.next({
-        ...user,
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+        telefone: user.telefone,
         token: token
       });
     } else {
@@ -176,5 +182,24 @@ export class AuthService {
 
   private deleteCookie(name: string): void {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  }
+
+  updateCurrentUser(userData: AuthResponse): void {
+    const currentToken = this.getToken();
+
+    const updatedUser = {
+      ...userData,
+      token: currentToken || userData.token
+    };
+
+    localStorage.setItem('current_user', JSON.stringify({
+      id: updatedUser.id,
+      nome: updatedUser.nome,
+      email: updatedUser.email,
+      telefone: updatedUser.telefone,
+      photoPath: updatedUser.photoPath
+    }));
+
+    this.currentUserSubject.next(updatedUser);
   }
 }

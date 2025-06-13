@@ -48,7 +48,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints públicos
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/veiculos/**").permitAll()
+
+                        // PERMITIR TODOS OS ENDPOINTS DE VEÍCULO
+                        .requestMatchers("/veiculo/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/veiculo/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/veiculo/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/veiculo/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/veiculo/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/veiculo/**").permitAll()
+
                         // PERMITIR TODOS OS ENDPOINTS DE LAVA-JATO
                         .requestMatchers("/lava-jato/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/lava-jato/**").permitAll()
@@ -56,6 +64,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/lava-jato/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/lava-jato/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/lava-jato/**").permitAll()
+
+                        // PERMITIR TODOS OS ENDPOINTS DE SERVIÇOS
+
+                        .requestMatchers("/servicos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/servicos/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/servicos/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/servicos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/servicos/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/servicos/**").permitAll()
+
                         // Outros endpoints precisam autenticação
                         .anyRequest().authenticated()
                 )

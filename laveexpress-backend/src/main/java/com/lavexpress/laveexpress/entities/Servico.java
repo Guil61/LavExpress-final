@@ -12,8 +12,6 @@ public class Servico {
 
     private String descricao;
 
-    private String tipo;
-
     private Double valor;
 
     @ManyToOne
@@ -24,10 +22,8 @@ public class Servico {
     public Servico() {
     }
 
-    public Servico(String descricao, String tipo, Double valor, LavaJato lavaJato) {
+    public Servico(String descricao,  Double valor, LavaJato lavaJato) {
         this.descricao = descricao;
-        this.tipo = tipo;
-        this.valor = valor;
         this.lavaJato = lavaJato;
     }
 
@@ -47,13 +43,7 @@ public class Servico {
         this.descricao = descricao;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
 
     public Double getValor() {
         return valor;

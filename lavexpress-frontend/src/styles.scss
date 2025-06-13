@@ -12,3 +12,85 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.p-toast,
+.p-confirm-dialog {
+  opacity: 1 !important;
+  background: #ffffff !important;
+}
+
+///* Customização do ConfirmDialog */
+//.p-confirm-dialog {
+//  .p-dialog-header {
+//    background: #ef4444;
+//    color: white;
+//    border-radius: 8px 8px 0 0;
+//  }
+//
+//  .p-dialog-content {
+//    padding: 2rem;
+//  }
+//
+//  .p-confirm-dialog-message {
+//    margin-left: 1rem;
+//    font-size: 1.1rem;
+//    line-height: 1.5;
+//  }
+//
+//  .p-confirm-dialog-icon {
+//    color: #f59e0b;
+//    font-size: 2rem;
+//  }
+//
+//  .p-button.p-button-danger {
+//    background: #ef4444;
+//    border-color: #ef4444;
+//
+//    &:hover {
+//      background: #dc2626;
+//      border-color: #dc2626;
+//    }
+//  }
+//}
+//
+///* Customização do Toast */
+//.p-toast {
+//  .p-toast-message-success {
+//    background: #10b981;
+//    border-color: #10b981;
+//    color: white;
+//  }
+//
+//  .p-toast-message-error {
+//    background: #ef4444;
+//    border-color: #ef4444;
+//    color: white;
+//  }
+//
+//  .p-toast-message-info {
+//    background: #3b82f6;
+//    border-color: #3b82f6;
+//    color: white;
+//  }
+//
+//  .p-toast-message-warn {
+//    background: #f59e0b;
+//    border-color: #f59e0b;
+//    color: white;
+//  }
+//}
+//
+///* Estilos adicionais para melhor aparência */
+//.p-toast-message {
+//  .p-toast-message-icon,
+//  .p-toast-icon-close {
+//    color: white !important;
+//  }
+//}
+//
+//.p-confirm-dialog {
+//  .p-dialog-footer {
+//    padding: 1rem 2rem;
+//    border-top: 1px solid #e5e7eb;
+//  }
+//}
