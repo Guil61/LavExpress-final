@@ -1,11 +1,11 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:10000}
 
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-d1di6vp5pdvs73ajeh8g-a.oregon-postgres.render.com:5432/lavexpressdb
-    username: lavexpressdb_user
-    password: VzbX5BEBFEPPWRlr26bEG6SwVJZpU1Ex
+    url: jdbc:postgresql://dpg-d1gsu2jipnbc73b5eiug-a.oregon-postgres.render.com:5432/lavexpressdb_2egg
+    username: lavexpress_user
+    password: Ht5EI60NVwIKhobWvZRkVf5tjsN9icIR
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
