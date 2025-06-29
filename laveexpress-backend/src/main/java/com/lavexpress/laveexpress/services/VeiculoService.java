@@ -80,7 +80,4 @@ public class VeiculoService extends BaseService<Veiculo> {
                 .map(veiculoMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
-
-
-
 }

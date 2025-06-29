@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/lavexpressdb
+    url: jdbc:postgresql://localhost:5432/lavexpressdb
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

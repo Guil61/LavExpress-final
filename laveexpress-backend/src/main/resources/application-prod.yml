@@ -1,0 +1,39 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-d1di6vp5pdvs73ajeh8g-a.oregon-postgres.render.com:5432/lavexpressdb
+    username: lavexpressdb_user
+    password: VzbX5BEBFEPPWRlr26bEG6SwVJZpU1Ex
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 864000000
+
+logging:
+  level:
+    com.lavexpress: INFO
+    org.springframework.security: WARN
+    org.hibernate: WARN
+    root: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
