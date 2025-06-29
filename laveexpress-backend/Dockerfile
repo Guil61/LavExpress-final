@@ -1,5 +1,5 @@
-# Etapa de build
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# Etapa de build - MUDANÇA: Java 17 → Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copiar arquivos de dependência primeiro para cache de layers
@@ -10,8 +10,8 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests -Dmaven.test.skip=true
 
-# Etapa de runtime
-FROM eclipse-temurin:17-jre-alpine
+# Etapa de runtime - MUDANÇA: Java 17 → Java 21
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 # Instalar curl para health checks
@@ -32,15 +32,15 @@ USER appuser
 
 # Configurar variáveis de ambiente padrão
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV PORT=8080
+ENV PORT=10000
 ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
-# Expor a porta
-EXPOSE ${PORT}
+# Expor a porta (Render usa porta 10000)
+EXPOSE 10000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-  CMD curl -f http://localhost:${PORT}/actuator/health || exit 1
+  CMD curl -f http://localhost:10000/actuator/health || exit 1
 
 # Comando para executar a aplicação
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar -Dserver.port=${PORT} app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar -Dserver.port=10000 app.jar"]
